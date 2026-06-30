@@ -4,8 +4,8 @@ TEP_Faulty_Training.csv
 TEP_FaultFree_Testing.csv
 TEP_Faulty_Testing.csv
 
-# ── Pre-split fault data (regenerate by running prep_demo_data.py) ──
-fault_data/
+# ── Fault-free split file (172 MB — over GitHub limit) ──
+fault_data/TEP_Fault00_Testing.csv
 
 # ── Python cache ──
 __pycache__/

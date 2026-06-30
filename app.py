@@ -249,30 +249,37 @@ elif "Simulation" in page:
                                      f"TEP_Fault{fault_sel:02d}_Testing.csv")
 
             if os.path.exists(fast_path):
-                with st.spinner(f"Loading Fault {fault_sel} data (fast path)…"):
+                with st.spinner(f"Loading Fault {fault_sel} data…"):
                     df = pd.read_csv(fast_path)
                     df = df[df["simulationRun"] == run_sel].sort_values("sample").reset_index(drop=True)
+            elif fault_sel == 0:
+                st.error("Normal operation (Fault 0) data is not available in the online demo "
+                         "due to file size limits. Please select **Fault 1–20** to run a simulation.")
+                SS.sim_key = None
+                df = pd.DataFrame()
             else:
-                big_path = os.path.join(BASE,
-                    "TEP_FaultFree_Testing.csv" if fault_sel == 0
-                    else "TEP_Faulty_Testing.csv")
-                st.warning("Per-fault data files not ready yet — scanning full CSV "
-                           "(this takes 2–3 min). Run `prep_demo_data.py` once to make "
-                           "all future loads instant.")
-                bar = st.progress(0.0, text="Scanning…")
-                chunks, total = [], 0
-                file_size = os.path.getsize(big_path)
-                for chunk in pd.read_csv(big_path, chunksize=150_000):
-                    mask = chunk["simulationRun"] == run_sel
-                    if fault_sel > 0:
-                        mask &= chunk["faultNumber"] == fault_sel
-                    sub = chunk[mask]
-                    if len(sub): chunks.append(sub)
-                    total += len(chunk)
-                    bar.progress(min(total / (file_size / 375), 1.0),
-                                 text=f"Scanning… {total:,} rows")
-                bar.empty()
-                df = pd.concat(chunks).sort_values("sample").reset_index(drop=True) if chunks else pd.DataFrame()
+                big_path = os.path.join(BASE, "TEP_Faulty_Testing.csv")
+                if not os.path.exists(big_path):
+                    st.error("Simulation data not found. Please run `prep_demo_data.py` locally "
+                             "to generate the `fault_data/` files, then re-deploy.")
+                    SS.sim_key = None
+                    df = pd.DataFrame()
+                else:
+                    st.warning("Scanning full CSV — this may take a few minutes.")
+                    bar = st.progress(0.0, text="Scanning…")
+                    chunks, total = [], 0
+                    file_size = os.path.getsize(big_path)
+                    for chunk in pd.read_csv(big_path, chunksize=150_000):
+                        mask = chunk["simulationRun"] == run_sel
+                        if fault_sel > 0:
+                            mask &= chunk["faultNumber"] == fault_sel
+                        sub = chunk[mask]
+                        if len(sub): chunks.append(sub)
+                        total += len(chunk)
+                        bar.progress(min(total / (file_size / 375), 1.0),
+                                     text=f"Scanning… {total:,} rows")
+                    bar.empty()
+                    df = pd.concat(chunks).sort_values("sample").reset_index(drop=True) if chunks else pd.DataFrame()
 
             if df.empty:
                 st.error(f"No data found for Fault {fault_sel}, Run {run_sel}.")
