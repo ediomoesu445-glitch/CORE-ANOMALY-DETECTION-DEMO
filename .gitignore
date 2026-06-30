@@ -22,6 +22,9 @@ venv/
 env/
 *.egg-info/
 
+# ── Streamlit secrets (never commit passwords) ──
+.streamlit/secrets.toml
+
 # ── OS files ──
 .DS_Store
 Thumbs.db

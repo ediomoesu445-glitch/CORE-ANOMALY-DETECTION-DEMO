@@ -14,6 +14,57 @@ import matplotlib.gridspec as gridspec
 warnings.filterwarnings("ignore")
 BASE = os.path.dirname(os.path.abspath(__file__))
 
+# ── PASSWORD GATE ─────────────────────────────────────────────────────────────
+def _check_password():
+    try:
+        PASSWORD = st.secrets["app_password"]
+    except (KeyError, FileNotFoundError):
+        st.error("⚙️ App password not configured. Add `app_password` to Streamlit secrets.")
+        st.stop()
+
+    if st.session_state.get("authenticated"):
+        return True
+
+    st.markdown("""
+    <style>
+    [data-testid="stAppViewContainer"] { background: linear-gradient(135deg, #0a1628 0%, #0D2137 100%); }
+    [data-testid="stHeader"] { background: transparent; }
+    .login-box {
+        max-width: 420px; margin: 80px auto 0; padding: 48px 40px;
+        background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12);
+        border-radius: 20px; text-align: center;
+    }
+    .login-title { color: #ffffff; font-size: 26px; font-weight: 700;
+        font-family: sans-serif; margin-bottom: 6px; }
+    .login-sub { color: rgba(255,255,255,0.5); font-size: 14px;
+        font-family: sans-serif; margin-bottom: 32px; }
+    .login-label { color: #C9A84C; font-size: 13px; font-weight: 600;
+        font-family: sans-serif; letter-spacing: 1px; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<div class="login-box">', unsafe_allow_html=True)
+    st.markdown('<div style="font-size:48px;">🛢️</div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-title">NMDPRA</div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-sub">Anomaly Detection System<br>Enter access password to continue</div>', unsafe_allow_html=True)
+
+    pwd = st.text_input("", type="password", placeholder="Enter password…",
+                        label_visibility="collapsed")
+    if st.button("Access System", use_container_width=True, type="primary"):
+        if pwd == PASSWORD:
+            st.session_state.authenticated = True
+            st.rerun()
+        else:
+            st.error("Incorrect password. Please try again.")
+
+    st.markdown('<div style="margin-top:32px; color:rgba(255,255,255,0.2); font-size:12px;">Nigerian Midstream &amp; Downstream Petroleum Regulatory Authority</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    return False
+
+if not _check_password():
+    st.stop()
+# ─────────────────────────────────────────────────────────────────────────────
+
 st.set_page_config(
     page_title="NMDPRA Anomaly Detection System",
     page_icon="🛢️",
