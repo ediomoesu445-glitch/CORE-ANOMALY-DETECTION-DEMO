@@ -1,0 +1,28 @@
+# ── Raw TEP Dataset CSV files (too large for GitHub — download from source) ──
+TEP_FaultFree_Training.csv
+TEP_Faulty_Training.csv
+TEP_FaultFree_Testing.csv
+TEP_Faulty_Testing.csv
+
+# ── Pre-split fault data (regenerate by running prep_demo_data.py) ──
+fault_data/
+
+# ── Python cache ──
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# ── Jupyter ──
+.ipynb_checkpoints/
+
+# ── Environment ──
+.env
+venv/
+env/
+*.egg-info/
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NMDPRA Anomaly Detection System – Executive Presentation</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&family=Open+Sans:wght@300;400;600&display=swap');
+
+  :root {
+    --green:  #006633;
+    --dgreen: #004422;
+    --gold:   #C9A84C;
+    --lgold:  #F0D080;
+    --white:  #FFFFFF;
+    --offwhite:#F5F5F0;
+    --dark:   #0D1117;
+    --gray:   #555;
+    --red:    #C0392B;
+    --orange: #E67E22;
+    --blue:   #1A5276;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: #0D1117;
+    overflow: hidden;
+  }
+
+  /* ── SLIDE CONTAINER ── */
+  .deck { width:100vw; height:100vh; position:relative; }
+
+  .slide {
+    width:100%; height:100%;
+    position:absolute; top:0; left:0;
+    display:none; flex-direction:column;
+    justify-content:center; align-items:center;
+    padding:60px 80px;
+    opacity:0; transition:opacity .4s ease;
+  }
+  .slide.active { display:flex; opacity:1; }
+
+  /* ── NAVIGATION ── */
+  .nav {
+    position:fixed; bottom:32px; left:50%; transform:translateX(-50%);
+    display:flex; align-items:center; gap:16px; z-index:999;
+  }
+  .nav button {
+    background: rgba(255,255,255,0.15); border:2px solid rgba(255,255,255,0.3);
+    color:#fff; padding:10px 28px; border-radius:30px; cursor:pointer;
+    font-size:15px; font-family:'Montserrat',sans-serif; font-weight:600;
+    transition:all .25s;
+  }
+  .nav button:hover { background:var(--gold); border-color:var(--gold); color:#000; }
+  .nav .counter {
+    color:rgba(255,255,255,0.6); font-size:14px; font-family:'Montserrat',sans-serif;
+    min-width:70px; text-align:center;
+  }
+
+  /* progress dots */
+  .dots {
+    position:fixed; top:24px; left:50%; transform:translateX(-50%);
+    display:flex; gap:8px; z-index:999;
+  }
+  .dot {
+    width:8px; height:8px; border-radius:50%;
+    background:rgba(255,255,255,0.25); transition:all .3s;
+    cursor:pointer;
+  }
+  .dot.active { background:var(--gold); transform:scale(1.3); }
+
+  /* ── SLIDE THEMES ── */
+  .s-dark   { background: linear-gradient(135deg, #0a1628 0%, #0D2137 100%); }
+  .s-green  { background: linear-gradient(135deg, var(--dgreen) 0%, #003322 100%); }
+  .s-gold   { background: linear-gradient(135deg, #2A1F00 0%, #1A1200 100%); }
+  .s-red    { background: linear-gradient(135deg, #2C0A0A 0%, #1A0505 100%); }
+  .s-split  { flex-direction:row; gap:60px; padding:50px 80px; }
+
+  /* ── TYPOGRAPHY ── */
+  h1 { font-family:'Montserrat',sans-serif; font-weight:800; }
+  h2 { font-family:'Montserrat',sans-serif; font-weight:700; }
+  h3 { font-family:'Montserrat',sans-serif; font-weight:600; }
+
+  .slide-label {
+    font-family:'Montserrat',sans-serif; font-size:12px; font-weight:600;
+    letter-spacing:3px; text-transform:uppercase; color:var(--gold);
+    margin-bottom:14px;
+  }
+  .title-main {
+    font-size:54px; line-height:1.12; color:var(--white); margin-bottom:16px;
+  }
+  .title-sub {
+    font-size:22px; color:rgba(255,255,255,0.65); font-weight:300; line-height:1.5;
+  }
+  .slide-title {
+    font-size:38px; color:var(--white); margin-bottom:10px; line-height:1.2;
+  }
+  .slide-subtitle {
+    font-size:19px; color:var(--gold); font-weight:400; margin-bottom:40px;
+  }
+  .body-text {
+    font-size:19px; color:rgba(255,255,255,0.85); line-height:1.8;
+  }
+  .big-stat {
+    font-family:'Montserrat',sans-serif; font-size:80px; font-weight:800;
+    color:var(--gold); line-height:1;
+  }
+  .stat-label { font-size:18px; color:rgba(255,255,255,0.6); margin-top:6px; }
+
+  /* ── CARDS ── */
+  .card-row { display:flex; gap:24px; width:100%; margin-top:10px; }
+  .card {
+    flex:1; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+    border-radius:16px; padding:28px 24px;
+  }
+  .card-icon { font-size:36px; margin-bottom:12px; }
+  .card h3 { color:var(--gold); font-size:17px; margin-bottom:10px; }
+  .card p  { color:rgba(255,255,255,0.75); font-size:15px; line-height:1.65; }
+
+  .card.highlight {
+    border-color:var(--gold); background:rgba(201,168,76,0.08);
+  }
+  .card.danger {
+    border-color:#E74C3C; background:rgba(231,76,60,0.08);
+  }
+  .card.success {
+    border-color:#27AE60; background:rgba(39,174,96,0.08);
+  }
+
+  /* ── SCENARIO BOX ── */
+  .scenario {
+    background:rgba(255,255,255,0.05); border-left:5px solid var(--gold);
+    border-radius:0 12px 12px 0; padding:22px 28px; margin-bottom:20px;
+    width:100%;
+  }
+  .scenario h3 { color:var(--gold); font-size:18px; margin-bottom:8px; }
+  .scenario p  { color:rgba(255,255,255,0.8); font-size:16px; line-height:1.7; }
+  .scenario.danger  { border-color:#E74C3C; }
+  .scenario.success { border-color:#27AE60; }
+
+  /* ── TIMELINE ── */
+  .timeline { display:flex; gap:0; width:100%; margin-top:30px; }
+  .tl-step {
+    flex:1; text-align:center; position:relative;
+  }
+  .tl-step::after {
+    content:''; position:absolute; top:24px; left:50%; width:100%;
+    height:3px; background:rgba(255,255,255,0.15);
+  }
+  .tl-step:last-child::after { display:none; }
+  .tl-circle {
+    width:50px; height:50px; border-radius:50%; background:var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Montserrat',sans-serif; font-weight:800; font-size:20px;
+    color:#000; margin:0 auto 14px; position:relative; z-index:1;
+  }
+  .tl-label { color:var(--white); font-size:14px; font-weight:600; margin-bottom:6px; }
+  .tl-desc  { color:rgba(255,255,255,0.55); font-size:12px; line-height:1.5; padding:0 6px; }
+
+  /* ── COMPARISON TABLE ── */
+  .compare { display:flex; gap:28px; width:100%; margin-top:10px; }
+  .compare-col { flex:1; border-radius:16px; overflow:hidden; }
+  .compare-head {
+    padding:18px 24px; font-family:'Montserrat',sans-serif; font-weight:700;
+    font-size:18px; text-align:center;
+  }
+  .compare-head.bad  { background:#7B241C; color:#fff; }
+  .compare-head.good { background:#1E8449; color:#fff; }
+  .compare-body { background:rgba(255,255,255,0.05); padding:20px 24px; }
+  .compare-item {
+    display:flex; align-items:flex-start; gap:12px; margin-bottom:16px;
+  }
+  .compare-item .ico { font-size:20px; flex-shrink:0; margin-top:2px; }
+  .compare-item p { color:rgba(255,255,255,0.8); font-size:15px; line-height:1.6; }
+
+  /* ── METRIC BADGE ── */
+  .metrics-row { display:flex; gap:20px; width:100%; margin-top:20px; }
+  .metric {
+    flex:1; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12);
+    border-radius:14px; padding:22px 16px; text-align:center;
+  }
+  .metric .val {
+    font-family:'Montserrat',sans-serif; font-size:40px; font-weight:800;
+    color:var(--gold);
+  }
+  .metric .lbl { font-size:13px; color:rgba(255,255,255,0.55); margin-top:6px; line-height:1.4; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background:rgba(201,168,76,0.12); border:2px solid var(--gold);
+    border-radius:14px; padding:24px 32px; margin-top:28px; width:100%;
+  }
+  .callout p { color:rgba(255,255,255,0.9); font-size:18px; line-height:1.7; }
+  .callout strong { color:var(--gold); }
+
+  /* ── TITLE SLIDE DECO ── */
+  .title-deco {
+    position:absolute; top:0; right:0; width:45%; height:100%;
+    background:linear-gradient(135deg, rgba(0,102,51,0.3), rgba(0,40,20,0.1));
+    clip-path:polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+  }
+  .title-deco-inner {
+    position:absolute; top:0; right:0; width:42%; height:100%;
+    background:linear-gradient(135deg, rgba(201,168,76,0.15), rgba(100,80,20,0.05));
+    clip-path:polygon(30% 0, 100% 0, 100% 100%, 10% 100%);
+  }
+  .nmdpra-bar {
+    position:absolute; top:0; left:0; right:0; height:6px;
+    background:linear-gradient(90deg, var(--green), var(--gold), var(--green));
+  }
+  .flag-stripe {
+    position:absolute; bottom:0; left:0; right:0; height:5px;
+    background:linear-gradient(90deg, var(--green) 33%, #fff 33% 67%, var(--green) 67%);
+  }
+
+  /* ── QUOTE ── */
+  .quote-box {
+    background:rgba(255,255,255,0.04); border-left:6px solid var(--gold);
+    border-radius:0 16px 16px 0; padding:28px 36px; margin:24px 0; width:100%;
+  }
+  .quote-box p { font-size:22px; color:rgba(255,255,255,0.9); line-height:1.7; font-style:italic; }
+  .quote-box .attr { font-size:14px; color:var(--gold); margin-top:12px; font-style:normal; font-weight:600; }
+
+  /* ── LEFT / RIGHT SPLIT ── */
+  .split-left  { flex:1; display:flex; flex-direction:column; justify-content:center; }
+  .split-right { flex:1; display:flex; flex-direction:column; justify-content:center; gap:14px; }
+
+  /* ── ICON ROW ── */
+  .icon-row { display:flex; gap:16px; flex-wrap:wrap; margin-top:20px; }
+  .icon-chip {
+    display:flex; align-items:center; gap:10px;
+    background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1);
+    border-radius:40px; padding:12px 20px;
+  }
+  .icon-chip .i { font-size:22px; }
+  .icon-chip span { color:rgba(255,255,255,0.8); font-size:15px; }
+
+  /* ── LIST ── */
+  ul.styled { list-style:none; }
+  ul.styled li {
+    display:flex; align-items:flex-start; gap:12px;
+    color:rgba(255,255,255,0.82); font-size:17px; line-height:1.65;
+    margin-bottom:14px;
+  }
+  ul.styled li::before { content:'▶'; color:var(--gold); flex-shrink:0; margin-top:3px; font-size:11px; }
+
+  /* ── PRINT / PDF ── */
+  @media print {
+    body { overflow:visible; background:#fff; }
+    .nav, .dots { display:none; }
+    .slide { display:flex !important; opacity:1 !important; position:relative !important;
+      page-break-after:always; height:100vh; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dots" id="dots"></div>
+
+<div class="deck" id="deck">
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 1 ── TITLE -->
+<div class="slide s-dark active">
+  <div class="nmdpra-bar"></div>
+  <div class="title-deco"></div>
+  <div class="title-deco-inner"></div>
+
+  <div style="max-width:700px; position:relative; z-index:2;">
+    <div class="slide-label">CONFIDENTIAL  •  EXECUTIVE BRIEFING  •  2026</div>
+    <h1 class="title-main">NMDPRA<br>Anomaly Detection<br>System</h1>
+    <div class="title-sub" style="margin-top:20px; margin-bottom:40px;">
+      How Artificial Intelligence Can Protect Nigeria's Petroleum Infrastructure,
+      Save Lives, and Position NMDPRA as a World-Class Regulator
+    </div>
+    <div class="icon-row">
+      <div class="icon-chip"><span class="i">🛢️</span><span>Petroleum Safety</span></div>
+      <div class="icon-chip"><span class="i">🤖</span><span>Machine Learning</span></div>
+      <div class="icon-chip"><span class="i">🇳🇬</span><span>NMDPRA</span></div>
+    </div>
+  </div>
+  <div class="flag-stripe"></div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 2 ── THE PROBLEM -->
+<div class="slide s-red">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">The Problem We Face Today</div>
+  <h2 class="slide-title">Every year, petroleum facilities fail — <br>and we often find out too late.</h2>
+  <div class="slide-subtitle">These failures are not random. They have warning signs. We are currently missing them.</div>
+
+  <div class="card-row">
+    <div class="card danger">
+      <div class="card-icon">💥</div>
+      <h3>Equipment Failures</h3>
+      <p>Pumps, compressors, heat exchangers and valves develop faults gradually. By the time operators notice, the damage is already done — shutdowns cost millions per day.</p>
+    </div>
+    <div class="card danger">
+      <div class="card-icon">🔥</div>
+      <h3>Fire &amp; Explosion Risk</h3>
+      <p>Undetected gas leaks, pressure build-ups and temperature spikes in LPG plants, refineries and pipelines can escalate into catastrophic fires in minutes.</p>
+    </div>
+    <div class="card danger">
+      <div class="card-icon">🌊</div>
+      <h3>Environmental Damage</h3>
+      <p>Undetected pipeline leaks and tank overflows cause crude oil spills, contaminating farmland and waterways — costing the nation billions in cleanup and reputation.</p>
+    </div>
+    <div class="card danger">
+      <div class="card-icon">👁️</div>
+      <h3>Human Limitations</h3>
+      <p>Operators monitor dozens of sensors simultaneously. Research shows humans can only reliably track 7 things at once. Modern facilities have 50–200 sensors per unit.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:28px;">
+    <p>⚠️ <strong>The hard truth:</strong> In most petroleum facilities today, alarms only ring after a fault has already occurred. We react instead of prevent.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 3 ── ANALOGY -->
+<div class="slide s-dark">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">Understanding the Concept — Simply</div>
+  <h2 class="slide-title">Think of it as a <span style="color:var(--gold)">24/7 Doctor</span><br>for your petroleum facility.</h2>
+
+  <div class="card-row" style="margin-top:36px;">
+    <div class="card">
+      <div class="card-icon">🏥</div>
+      <h3>Your Annual Medical Check-Up</h3>
+      <p>A doctor takes your blood pressure, temperature, and heart rate. If any reading is unusual — even slightly — the doctor investigates <em>before</em> you collapse.</p>
+    </div>
+    <div class="card highlight" style="border-width:2px;">
+      <div class="card-icon">🛢️</div>
+      <h3>Our Anomaly Detection System</h3>
+      <p>The system continuously reads 52 sensors at every facility — pressure, temperature, flow rates, valve positions — every few seconds, 24 hours a day, 365 days a year.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔔</div>
+      <h3>Alarm Before the Crisis</h3>
+      <p>The moment any combination of readings becomes abnormal — even if no single sensor is alarming — the system raises a flag for investigation. Before a disaster, not after.</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>
+      🩺 Just as a doctor does not wait for a patient to collapse before ordering tests,
+      <strong>our system does not wait for an explosion before raising an alarm.</strong>
+      It detects the subtle warning signs that human eyes and traditional alarms miss.
+    </p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 4 ── HOW IT WORKS -->
+<div class="slide s-green">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">How the System Works</div>
+  <h2 class="slide-title">Three simple steps — fully automatic.</h2>
+  <div class="slide-subtitle">No complex training required for operators. The system does the thinking.</div>
+
+  <div class="timeline" style="margin-top:40px;">
+    <div class="tl-step">
+      <div class="tl-circle">1</div>
+      <div class="tl-label">SENSE</div>
+      <div class="tl-desc">The system reads all 52 facility sensors simultaneously — pressure, temperature, flow, valve positions — every few seconds, continuously.</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-circle">2</div>
+      <div class="tl-label">ANALYSE</div>
+      <div class="tl-desc">Two AI models instantly compare today's readings against what "normal" looks like. Any deviation — even invisible to humans — is flagged.</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-circle">3</div>
+      <div class="tl-label">PINPOINT</div>
+      <div class="tl-desc">When an alarm fires, the system shows exactly <em>which sensor</em> or <em>which equipment</em> is the root cause — no guesswork for engineers.</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-circle">4</div>
+      <div class="tl-label">ALERT</div>
+      <div class="tl-desc">A dashboard alarm is raised — red for confirmed fault, yellow for elevated risk — giving engineers time to act before things escalate.</div>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:36px;">
+    <p>🤖 <strong>Two AI layers work together:</strong> The first layer (MSPC) acts like a sensitive smoke detector — it flags any deviation from normal. The second layer (LightGBM AI) confirms the fault type and severity. Together they achieve <strong>99.9% detection accuracy</strong> with almost zero false alarms.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 5 ── SCENARIO 1 -->
+<div class="slide s-dark s-split">
+  <div class="nmdpra-bar"></div>
+
+  <div class="split-left">
+    <div class="slide-label">Real-Life NMDPRA Scenario — 1 of 4</div>
+    <h2 class="slide-title">🚰 Pipeline Leak Detection</h2>
+    <div class="slide-subtitle">Trans-Niger &amp; Escravos-Lagos type trunk lines</div>
+    <div class="body-text" style="margin-top:20px; font-size:17px; line-height:1.8;">
+      Nigeria loses an estimated <strong style="color:var(--gold);">₦1.5 trillion</strong> annually to pipeline crude oil theft and leaks.
+      Most leaks go undetected for <strong style="color:#E74C3C;">days or weeks</strong> because pressure drops develop slowly.
+      <br><br>
+      A human operator watching a pressure gauge will not notice a 2% pressure decline — but the AI does,
+      within the first few minutes of a developing leak.
+    </div>
+  </div>
+
+  <div class="split-right">
+    <div class="scenario danger">
+      <h3>❌ Without the System</h3>
+      <p>A slow leak develops at 2:00 AM. No operator notices the gradual pressure drop. By 9:00 AM when a field team reports a spill, 50,000 barrels have already been lost. Community protests, government fines, and a ₦2 billion cleanup follow.</p>
+    </div>
+    <div class="scenario success">
+      <h3>✅ With the System</h3>
+      <p>At 2:04 AM — 4 minutes after the leak starts — the AI detects unusual flow and pressure patterns across 3 sensors simultaneously. A dashboard alarm is raised. A maintenance crew is dispatched by 2:30 AM. Total loss: under 500 barrels. Crisis averted.</p>
+    </div>
+    <div class="callout" style="margin-top:0;">
+      <p><strong>NMDPRA impact:</strong> Regulatory enforcement backed by AI-timestamped evidence of when the fault began and when the operator was notified.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 6 ── SCENARIO 2 -->
+<div class="slide s-dark s-split">
+  <div class="nmdpra-bar"></div>
+
+  <div class="split-left">
+    <div class="slide-label">Real-Life NMDPRA Scenario — 2 of 4</div>
+    <h2 class="slide-title">🔥 LPG Plant<br>Overpressure Event</h2>
+    <div class="slide-subtitle">LPG bottling plants, gas processing facilities</div>
+    <div class="body-text" style="margin-top:20px; font-size:17px; line-height:1.8;">
+      Nigeria has over <strong style="color:var(--gold);">3,000 licensed LPG plants</strong>. Overpressure in storage vessels
+      is the leading cause of LPG explosions. A single cooling water pump failure can silently set off a chain reaction
+      that ends in catastrophe within <strong style="color:#E74C3C;">30 minutes</strong>.
+      <br><br>
+      This is precisely the kind of fault our system detects — a cooling water temperature rising
+      abnormally before pressure even reaches the danger zone.
+    </div>
+  </div>
+
+  <div class="split-right">
+    <div class="scenario danger">
+      <h3>❌ Without the System</h3>
+      <p>A cooling water valve sticks at 11:00 PM. Temperature rises slowly. By 11:45 PM, vessel pressure reaches the safety relief threshold. The relief valve opens noisily — waking workers who then attempt a manual shutdown under pressure. A fire breaks out. Two workers are injured.</p>
+    </div>
+    <div class="scenario success">
+      <h3>✅ With the System</h3>
+      <p>At 11:03 PM — 3 minutes after the valve sticks — the AI detects an unusual cooling water outlet temperature pattern and raises an amber alert. The night supervisor is paged. The faulty valve is identified and manually corrected by 11:20 PM. No incident. No injury. No fine.</p>
+    </div>
+    <div class="callout" style="margin-top:0;">
+      <p><strong>NMDPRA impact:</strong> Proactive safety regulation — the Authority can require all licensed LPG plants to run this system as a licence condition.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 7 ── SCENARIO 3 -->
+<div class="slide s-dark s-split">
+  <div class="nmdpra-bar"></div>
+
+  <div class="split-left">
+    <div class="slide-label">Real-Life NMDPRA Scenario — 3 of 4</div>
+    <h2 class="slide-title">🏭 Petroleum Depot<br>Storage Tank Anomaly</h2>
+    <div class="slide-subtitle">Atlas Cove, Mosimi, PPMC depots and licensed private depots</div>
+    <div class="body-text" style="margin-top:20px; font-size:17px; line-height:1.8;">
+      Floating roof tanks can develop seal failures, causing fuel vapour release and product loss.
+      Level transmitter faults can cause overfilling — the same type of failure that caused the
+      <strong style="color:var(--gold);">Buncefield oil terminal explosion</strong> in the UK (2005, ₦500bn damage).
+      <br><br>
+      Our system continuously monitors tank level, temperature, and inflow/outflow ratios —
+      detecting discrepancies that signal a seal failure or instrument fault before overflow.
+    </div>
+  </div>
+
+  <div class="split-right">
+    <div class="scenario danger">
+      <h3>❌ Without the System</h3>
+      <p>A faulty tank level sensor reads lower than actual. A pump continues filling the tank beyond capacity. Fuel overflows onto the bund area. An ignition source nearby causes a fire. The depot is shut for 6 weeks. NMDPRA issues a fine, but the damage is done.</p>
+    </div>
+    <div class="scenario success">
+      <h3>✅ With the System</h3>
+      <p>The AI notices the inflow rate and outflow rate don't match what the level sensor shows — a classic signature of a faulty instrument. It raises an alert: "Tank 5 — Level Sensor Discrepancy." The filling pump is stopped remotely. Sensor is replaced the next morning. No spill. No shutdown.</p>
+    </div>
+    <div class="callout" style="margin-top:0;">
+      <p><strong>NMDPRA impact:</strong> AI-generated evidence that a company ignored a flagged instrument fault becomes a clear basis for regulatory enforcement action.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 8 ── SCENARIO 4 -->
+<div class="slide s-dark s-split">
+  <div class="nmdpra-bar"></div>
+
+  <div class="split-left">
+    <div class="slide-label">Real-Life NMDPRA Scenario — 4 of 4</div>
+    <h2 class="slide-title">⚙️ Gas Plant<br>Compressor Fault</h2>
+    <div class="slide-subtitle">Gas processing plants, NGL recovery facilities, export terminals</div>
+    <div class="body-text" style="margin-top:20px; font-size:17px; line-height:1.8;">
+      Compressors are the heart of gas processing plants — and among the most expensive equipment to repair or replace.
+      A single centrifugal compressor can cost <strong style="color:var(--gold);">$5 million</strong> to replace.
+      Bearing wear, impeller fouling, and seal degradation all develop gradually over weeks
+      before catastrophic failure.
+      <br><br>
+      Our system detects these signatures early — giving engineers
+      <strong style="color:#27AE60;">weeks of advance warning</strong>, not minutes.
+    </div>
+  </div>
+
+  <div class="split-right">
+    <div class="scenario danger">
+      <h3>❌ Without the System</h3>
+      <p>A compressor bearing begins degrading in January. By March, the compressor seizes, causing an unplanned plant shutdown. The facility loses 45 days of production. Emergency part procurement from overseas takes 3 weeks. Total cost: $12 million in lost production + $4 million repair.</p>
+    </div>
+    <div class="scenario success">
+      <h3>✅ With the System</h3>
+      <p>In mid-January, the AI flags subtle changes in compressor suction pressure and discharge temperature — the early fingerprint of bearing wear. Engineers schedule a planned maintenance shutdown in February — 3 days, bearing replaced at $200,000. The $16 million disaster is avoided.</p>
+    </div>
+    <div class="callout" style="margin-top:0;">
+      <p><strong>NMDPRA impact:</strong> Fewer unplanned shutdowns means more consistent gas supply, less gas flaring, and lower carbon emissions — all within NMDPRA's mandate.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 9 ── THE NUMBERS -->
+<div class="slide s-green">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">What Our Testing Proves</div>
+  <h2 class="slide-title">The numbers speak for themselves.</h2>
+  <div class="slide-subtitle">Tested on 9.6 million real process data points across 20 different fault types.</div>
+
+  <div class="metrics-row" style="margin-top:30px;">
+    <div class="metric">
+      <div class="val">99.9%</div>
+      <div class="lbl">Fault Detection Rate<br><span style="color:rgba(255,255,255,0.35);font-size:11px;">Faults caught before escalation</span></div>
+    </div>
+    <div class="metric">
+      <div class="val">0.03%</div>
+      <div class="lbl">False Alarm Rate<br><span style="color:rgba(255,255,255,0.35);font-size:11px;">Virtually zero unnecessary alarms</span></div>
+    </div>
+    <div class="metric">
+      <div class="val">20</div>
+      <div class="lbl">Distinct Fault Types<br><span style="color:rgba(255,255,255,0.35);font-size:11px;">From leaks to sensor drift</span></div>
+    </div>
+    <div class="metric">
+      <div class="val">52</div>
+      <div class="lbl">Sensors Monitored<br><span style="color:rgba(255,255,255,0.35);font-size:11px;">Simultaneously, every second</span></div>
+    </div>
+    <div class="metric">
+      <div class="val">&lt;1s</div>
+      <div class="lbl">Detection Speed<br><span style="color:rgba(255,255,255,0.35);font-size:11px;">From fault onset to alarm</span></div>
+    </div>
+  </div>
+
+  <div class="card-row" style="margin-top:28px;">
+    <div class="card success">
+      <div class="card-icon">🏆</div>
+      <h3>Industry Benchmark</h3>
+      <p>99.9% detection with 0.03% false alarms exceeds the performance of commercial SCADA alarm systems used at most Nigerian petroleum facilities today.</p>
+    </div>
+    <div class="card success">
+      <div class="card-icon">⚡</div>
+      <h3>Speed of Detection</h3>
+      <p>Traditional alarm systems trigger only when a single sensor crosses a threshold. Our AI detects the <em>pattern</em> across multiple sensors — catching faults 10–30 minutes earlier on average.</p>
+    </div>
+    <div class="card success">
+      <div class="card-icon">🔬</div>
+      <h3>Root Cause in Seconds</h3>
+      <p>When an alarm fires, contribution plots instantly show which equipment or sensor is the primary driver — cutting diagnostic time from hours to seconds.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 10 ── BEFORE VS AFTER -->
+<div class="slide s-dark">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">The Transformation</div>
+  <h2 class="slide-title">Before vs. After the System</h2>
+  <div class="slide-subtitle">This is not an upgrade — it is a fundamental shift in how we operate.</div>
+
+  <div class="compare" style="margin-top:30px;">
+    <div class="compare-col">
+      <div class="compare-head bad">🔴 WITHOUT THE SYSTEM</div>
+      <div class="compare-body">
+        <div class="compare-item"><span class="ico">❌</span><p>Operators watch individual sensors — miss multi-sensor patterns</p></div>
+        <div class="compare-item"><span class="ico">❌</span><p>Alarms fire only after a fault is already serious</p></div>
+        <div class="compare-item"><span class="ico">❌</span><p>Engineers spend hours guessing which equipment failed</p></div>
+        <div class="compare-item"><span class="ico">❌</span><p>Night shifts and fatigue mean reduced vigilance</p></div>
+        <div class="compare-item"><span class="ico">❌</span><p>No digital audit trail of when warnings were received</p></div>
+        <div class="compare-item"><span class="ico">❌</span><p>Reactive maintenance — fix after failure</p></div>
+        <div class="compare-item"><span class="ico">❌</span><p>Regulatory enforcement relies on post-incident reports</p></div>
+      </div>
+    </div>
+    <div class="compare-col">
+      <div class="compare-head good">✅ WITH THE SYSTEM</div>
+      <div class="compare-body">
+        <div class="compare-item"><span class="ico">✅</span><p>AI monitors all 52 sensors simultaneously — catches hidden patterns</p></div>
+        <div class="compare-item"><span class="ico">✅</span><p>Early warning 10–30 minutes before situation becomes critical</p></div>
+        <div class="compare-item"><span class="ico">✅</span><p>Root cause pinpointed automatically — engineers act, not guess</p></div>
+        <div class="compare-item"><span class="ico">✅</span><p>24/7 vigilance — never tired, never distracted, never absent</p></div>
+        <div class="compare-item"><span class="ico">✅</span><p>Timestamped digital log of every alarm — admissible evidence</p></div>
+        <div class="compare-item"><span class="ico">✅</span><p>Predictive maintenance — plan repairs weeks in advance</p></div>
+        <div class="compare-item"><span class="ico">✅</span><p>NMDPRA can enforce using AI-generated data, not just reports</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 11 ── FINANCIAL CASE -->
+<div class="slide s-gold">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">The Financial Case</div>
+  <h2 class="slide-title" style="color:var(--lgold);">One prevented incident pays for<br>years of the system.</h2>
+
+  <div class="card-row" style="margin-top:30px;">
+    <div class="card" style="border-color:var(--gold); background:rgba(201,168,76,0.08);">
+      <div class="card-icon">💰</div>
+      <h3 style="color:var(--lgold);">Avoided Shutdown Costs</h3>
+      <p>An unplanned shutdown at a mid-size refinery costs <strong style="color:var(--lgold);">$500,000 – $2M per day</strong> in lost production. Early fault detection reduces unplanned shutdowns by 60–80% based on global industry data.</p>
+    </div>
+    <div class="card" style="border-color:var(--gold); background:rgba(201,168,76,0.08);">
+      <div class="card-icon">🌍</div>
+      <h3 style="color:var(--lgold);">Avoided Environmental Fines</h3>
+      <p>Oil spill cleanup in Nigeria averages <strong style="color:var(--lgold);">₦2–10 billion per incident</strong>. Regulatory fines, community compensation, and remediation make early detection a sound financial investment for every operator.</p>
+    </div>
+    <div class="card" style="border-color:var(--gold); background:rgba(201,168,76,0.08);">
+      <div class="card-icon">⚙️</div>
+      <h3 style="color:var(--lgold);">Predictive vs Reactive Maintenance</h3>
+      <p>Companies using predictive maintenance spend <strong style="color:var(--lgold);">25–30% less</strong> on maintenance annually. Replacing a bearing costs 1/50th the cost of replacing a seized compressor.</p>
+    </div>
+  </div>
+
+  <div class="card-row" style="margin-top:20px;">
+    <div class="card" style="background:rgba(0,0,0,0.3); border-color:rgba(201,168,76,0.3); text-align:center; padding:30px;">
+      <div class="big-stat">₦50B+</div>
+      <div class="stat-label" style="color:rgba(255,255,255,0.6);">Estimated annual petroleum infrastructure losses in Nigeria<br>attributable to late fault detection (leaks, fires, unplanned shutdowns)</div>
+    </div>
+    <div class="card" style="background:rgba(0,0,0,0.3); border-color:rgba(201,168,76,0.3); text-align:center; padding:30px;">
+      <div class="big-stat">70%</div>
+      <div class="stat-label" style="color:rgba(255,255,255,0.6);">Reduction in incident-related losses achievable with<br>AI-powered early anomaly detection (global industry benchmark)</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 12 ── NMDPRA BENEFITS -->
+<div class="slide s-green">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">Benefits to NMDPRA as the Regulator</div>
+  <h2 class="slide-title">This is not just a tool for operators.<br><span style="color:var(--gold);">It transforms how NMDPRA regulates.</span></h2>
+
+  <div class="card-row" style="margin-top:30px;">
+    <div class="card highlight">
+      <div class="card-icon">⚖️</div>
+      <h3>Stronger Enforcement</h3>
+      <p>AI-generated alarm logs with timestamps provide irrefutable digital evidence. When an operator ignores a flagged fault, NMDPRA has the data to enforce. No more "he said, she said" disputes.</p>
+    </div>
+    <div class="card highlight">
+      <div class="card-icon">📊</div>
+      <h3>Data-Driven Regulation</h3>
+      <p>Instead of relying on quarterly inspection visits, NMDPRA can monitor facility health continuously in real-time — the way a Central Bank monitors banks, not just during audits.</p>
+    </div>
+    <div class="card highlight">
+      <div class="card-icon">🛡️</div>
+      <h3>Proactive Safety Mandate</h3>
+      <p>NMDPRA moves from reactive (investigating accidents after they happen) to proactive (preventing accidents before they happen). This is the global gold standard for petroleum regulators.</p>
+    </div>
+  </div>
+  <div class="card-row" style="margin-top:20px;">
+    <div class="card highlight">
+      <div class="card-icon">🌍</div>
+      <h3>International Standing</h3>
+      <p>Regulators like the UK's Health &amp; Safety Executive and Norway's PSA mandate digital safety monitoring. NMDPRA adopting AI anomaly detection puts Nigeria alongside these world-class bodies.</p>
+    </div>
+    <div class="card highlight">
+      <div class="card-icon">🇳🇬</div>
+      <h3>Public Trust &amp; National Pride</h3>
+      <p>Fewer oil spills, fewer fires, fewer fatalities. The Nigerian public sees a regulator that uses modern technology to protect their communities. NMDPRA's credibility is enhanced.</p>
+    </div>
+    <div class="card highlight">
+      <div class="card-icon">💡</div>
+      <h3>Policy Intelligence</h3>
+      <p>Aggregated anomaly data across all regulated facilities gives NMDPRA insight into systemic industry risks — informing policy, licensing decisions, and targeted inspections.</p>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 13 ── ROADMAP -->
+<div class="slide s-dark">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">Implementation Roadmap</div>
+  <h2 class="slide-title">A phased approach — starting small,<br>growing to full national coverage.</h2>
+
+  <div class="card-row" style="margin-top:30px;">
+    <div class="card">
+      <div class="card-icon" style="color:var(--gold);">① &nbsp;Months 1–6</div>
+      <h3>Foundation</h3>
+      <p>Select 5–10 pilot facilities (high-risk depots, LPG plants, or pipeline nodes). Deploy sensors data collection. Train the AI model on normal operating data from these facilities.</p>
+      <p style="margin-top:12px; color:var(--gold); font-size:13px;">Cost: LOW • Risk: LOW</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="color:var(--gold);">② &nbsp;Months 6–12</div>
+      <h3>Screening Deployment</h3>
+      <p>Deploy the MSPC screening layer at pilot facilities. Operators receive real-time dashboards. NMDPRA inspectors access facility health reports remotely. Alarm logs are collected.</p>
+      <p style="margin-top:12px; color:var(--gold); font-size:13px;">Cost: MODERATE • Impact: IMMEDIATE</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="color:var(--gold);">③ &nbsp;Months 12–24</div>
+      <h3>AI Classification</h3>
+      <p>After 12 months of labelled alarm data, deploy the LightGBM fault classifier. System now not only detects anomalies but names the fault type and its severity.</p>
+      <p style="margin-top:12px; color:var(--gold); font-size:13px;">Cost: MODERATE • Accuracy: 99.9%</p>
+    </div>
+    <div class="card">
+      <div class="card-icon" style="color:var(--gold);">④ &nbsp;Month 24+</div>
+      <h3>National Rollout</h3>
+      <p>Mandate the system as a licensing requirement for all Class A and B facilities regulated by NMDPRA. Central monitoring centre staffed by NMDPRA technical team.</p>
+      <p style="margin-top:12px; color:var(--gold); font-size:13px;">Cost: RECOVERABLE via levies • Impact: TRANSFORMATIONAL</p>
+    </div>
+  </div>
+
+  <div class="callout">
+    <p>💡 <strong>Important:</strong> The AI technology in this demonstration was built using publicly available industrial process data. The same code runs on real NMDPRA facility data — only the data source needs to change.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 14 ── WHY NOW -->
+<div class="slide s-red">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">Why Now?</div>
+  <h2 class="slide-title">The window of opportunity is open.<br>Others are already moving.</h2>
+
+  <div class="card-row" style="margin-top:30px;">
+    <div class="card">
+      <div class="card-icon">⏰</div>
+      <h3>Technology is Mature</h3>
+      <p>Five years ago, this technology was experimental. Today it is proven — running at Equinor (Norway), Shell (Netherlands), and BP (UK). We do not need to invent it. We need to deploy it.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💻</div>
+      <h3>Costs Have Fallen Dramatically</h3>
+      <p>Cloud computing, open-source AI libraries, and lower sensor costs mean what cost $10M a decade ago now costs a fraction. The barrier to entry is lower than it has ever been.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌍</div>
+      <h3>Africa is Watching Nigeria</h3>
+      <p>Ghana's GNPC and Angola's Sonangol are evaluating AI safety systems. If NMDPRA moves first, Nigeria leads African petroleum regulation into the digital age. If we wait, we follow.</p>
+    </div>
+    <div class="card danger">
+      <div class="card-icon">⚡</div>
+      <h3>The Next Incident Could Be Soon</h3>
+      <p>Nigeria averaged more than <strong>one significant petroleum incident per month</strong> in recent years. The next one — preventable with this system — could happen tomorrow.</p>
+    </div>
+  </div>
+
+  <div class="quote-box" style="margin-top:28px;">
+    <p>"The best time to plant a tree was twenty years ago. The second best time is now."</p>
+    <div class="attr">— Relevant to every decision to adopt safety technology</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 15 ── WHAT WE ASK -->
+<div class="slide s-green">
+  <div class="nmdpra-bar"></div>
+  <div class="slide-label">Our Recommendation</div>
+  <h2 class="slide-title">We are asking for one decision:<br><span style="color:var(--gold);">Authorise the pilot programme.</span></h2>
+
+  <div class="card-row" style="margin-top:30px;">
+    <div class="card highlight" style="flex:2;">
+      <div class="card-icon">🎯</div>
+      <h3>What we need from this meeting</h3>
+      <ul class="styled" style="margin-top:12px;">
+        <li>Approval to proceed to a 90-day pilot at 3–5 NMDPRA-regulated facilities</li>
+        <li>Designation of a Technical Working Group from NMDPRA's HSE and ICT directorates</li>
+        <li>A directive to operators selected for the pilot to provide sensor data access</li>
+        <li>Budget approval for pilot phase (sensors, cloud infrastructure, training)</li>
+      </ul>
+    </div>
+    <div style="flex:1; display:flex; flex-direction:column; gap:20px;">
+      <div class="card success">
+        <div class="card-icon">✅</div>
+        <h3>What we already have</h3>
+        <p>Working AI system. Trained models. Proven accuracy. A demonstration dashboard ready to show today. The technical work is done.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <h3>Time to first results</h3>
+        <p>The pilot can be live within <strong style="color:var(--gold);">90 days</strong> of approval. First anomaly detections within <strong style="color:var(--gold);">Month 2</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout" style="background:rgba(0,102,51,0.25); border-color:#27AE60;">
+    <p>🛢️ <strong>The system works.</strong> The technology is proven. The business case is clear. The only remaining step is a decision to protect Nigeria's petroleum infrastructure with the best tools available to us today.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ SLIDE 16 ── CONCLUSION -->
+<div class="slide s-dark">
+  <div class="nmdpra-bar"></div>
+  <div class="title-deco" style="opacity:.5;"></div>
+  <div class="title-deco-inner" style="opacity:.5;"></div>
+
+  <div style="max-width:760px; text-align:center; position:relative; z-index:2;">
+    <div class="slide-label" style="text-align:center;">Summary</div>
+    <h2 class="slide-title" style="font-size:42px; text-align:center; line-height:1.3;">
+      We have built the future of<br>petroleum safety regulation.<br>
+      <span style="color:var(--gold);">Let us deploy it.</span>
+    </h2>
+
+    <div class="card-row" style="margin-top:36px; text-align:left;">
+      <div class="card" style="text-align:center; padding:22px 16px;">
+        <div style="font-size:32px;">🏭</div>
+        <h3 style="font-size:15px; margin-top:8px;">Protects Facilities</h3>
+        <p style="font-size:13px;">Early fault detection prevents shutdowns, fires, and explosions</p>
+      </div>
+      <div class="card" style="text-align:center; padding:22px 16px;">
+        <div style="font-size:32px;">👷</div>
+        <h3 style="font-size:15px; margin-top:8px;">Saves Lives</h3>
+        <p style="font-size:13px;">Workers and communities protected from preventable incidents</p>
+      </div>
+      <div class="card" style="text-align:center; padding:22px 16px;">
+        <div style="font-size:32px;">🌿</div>
+        <h3 style="font-size:15px; margin-top:8px;">Protects Environment</h3>
+        <p style="font-size:13px;">Spills and releases detected and stopped before they spread</p>
+      </div>
+      <div class="card" style="text-align:center; padding:22px 16px;">
+        <div style="font-size:32px;">💰</div>
+        <h3 style="font-size:15px; margin-top:8px;">Saves Money</h3>
+        <p style="font-size:13px;">One prevented incident pays for years of the system</p>
+      </div>
+      <div class="card highlight" style="text-align:center; padding:22px 16px;">
+        <div style="font-size:32px;">🏆</div>
+        <h3 style="font-size:15px; margin-top:8px;">Elevates NMDPRA</h3>
+        <p style="font-size:13px;">World-class regulator using world-class technology</p>
+      </div>
+    </div>
+
+    <div style="margin-top:36px; padding:24px 32px; background:rgba(201,168,76,0.1); border:2px solid var(--gold); border-radius:16px;">
+      <p style="font-size:20px; color:var(--white); line-height:1.6;">
+        <strong style="color:var(--gold);">NMDPRA</strong> — Nigerian Midstream &amp; Downstream Petroleum Regulatory Authority<br>
+        <span style="font-size:15px; color:rgba(255,255,255,0.55);">Anomaly Detection System  •  Confidential Executive Briefing  •  2026</span>
+      </p>
+    </div>
+  </div>
+  <div class="flag-stripe"></div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- NAV -->
+<div class="nav">
+  <button onclick="go(-1)">◀  Back</button>
+  <span class="counter" id="counter">1 / 16</span>
+  <button onclick="go(1)">Next  ▶</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const counter = document.getElementById('counter');
+  let cur = 0;
+
+  /* build dots */
+  slides.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot' + (i===0?' active':'');
+    d.onclick = ()=>goTo(i);
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(n){
+    slides[cur].classList.remove('active');
+    dotsEl.children[cur].classList.remove('active');
+    cur = (n + slides.length) % slides.length;
+    slides[cur].classList.add('active');
+    dotsEl.children[cur].classList.add('active');
+    counter.textContent = (cur+1) + ' / ' + slides.length;
+  }
+
+  function go(d){ goTo(cur+d); }
+
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(1);
+    if(e.key==='ArrowLeft' ||e.key==='ArrowUp')  go(-1);
+  });
+</script>
+</body>
+</html>
