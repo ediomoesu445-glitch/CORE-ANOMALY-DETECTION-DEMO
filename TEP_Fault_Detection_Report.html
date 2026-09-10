@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>TEP Fault Detection Report — NMDPRA</title>
+<title>TEP Fault Detection Report — CORE</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px;
@@ -66,7 +66,7 @@ tr:hover td { background:#f0f4fb; }
   <h2>A Comparative Study on the Tennessee Eastman Process Dataset<br>
       with Applications to Midstream &amp; Downstream Petroleum Operations</h2>
   <div class="meta">
-    <p><strong>Prepared for:</strong> Nigerian Midstream and Downstream Petroleum Regulatory Authority (NMDPRA)</p>
+    <p><strong>Prepared for:</strong> CORE — Cognitive Operations and Risk Engine for Oil and Gas Industries</p>
     <p><strong>Date:</strong> 29 June 2026</p>
     <p><strong>Dataset:</strong> Tennessee Eastman Process (TEP) — 5.25M training rows, 52 process variables</p>
     <p><strong>Methods:</strong> Logistic Regression · Random Forest · LightGBM · MLP Neural Network · PCA-MSPC</p>
@@ -94,7 +94,7 @@ tr:hover td { background:#f0f4fb; }
     <li><a href="#s8">MSPC Contribution Plots</a></li>
     <li><a href="#s9">Data Trend Visualisations</a></li>
     <li><a href="#s10">Key Findings</a></li>
-    <li><a href="#s11">Recommendations for NMDPRA</a></li>
+    <li><a href="#s11">Recommendations for Deployment</a></li>
     <li><a href="#s12">Appendix — All Figures</a></li>
   </ol>
 </div>
@@ -124,7 +124,7 @@ models and one unsupervised Multivariate Statistical Process Control (MSPC) mode
 </ul>
 
 <div class="callout good">
-  <strong>Key implication for NMDPRA:</strong> A two-tier system combining MSPC (as a rapid, unsupervised screener
+  <strong>Key implication for CORE:</strong> A two-tier system combining MSPC (as a rapid, unsupervised screener
   deployable with only normal operation data) with LightGBM (as a secondary classifier once labelled incident
   data is available) provides a practical, scalable anomaly detection pipeline for regulated petroleum facilities.
 </div>
@@ -423,7 +423,7 @@ new operational data arrives, this efficiency is decisive.</p>
 </section>
 
 <section id="s11">
-<h2 class="sec">11. Recommendations for NMDPRA</h2>
+<h2 class="sec">11. Recommendations for Deployment</h2>
 
 <h3>11.1 Deploy a Two-Tier Detection System</h3>
 <p>The most scalable architecture for a regulatory body overseeing many facilities simultaneously:</p>
@@ -433,7 +433,7 @@ new operational data arrives, this efficiency is decisive.</p>
   exceeds the 99% control limit. Requires no fault labels, deploys in seconds, scales to hundreds
   of facilities.<br><br>
   <strong>Tier 2 — LightGBM Classifier:</strong> Activated only for facilities flagged by Tier 1.
-  Trained on labelled historical incidents from NMDPRA enforcement records. Classifies the anomaly
+  Trained on labelled historical incidents from regulatory enforcement records. Classifies the anomaly
   type (metering, safety, quality, equipment) and generates a contribution plot pinpointing the
   specific sub-system for the inspector to prioritise.
 </div>
@@ -467,7 +467,7 @@ to both the MSPC baseline and the ML model. In the TEP literature, adding tempor
 alone pushes FDR above 0.85 for most fault types without changing the model architecture.</p>
 
 <h3>11.5 Build a Labelled Incident Database Progressively</h3>
-<p>Every NMDPRA inspection that results in an enforcement action or facility notification is a potential
+<p>Every regulatory inspection that results in an enforcement action or facility notification is a potential
 labelled training sample. Over 12–18 months of systematic logging, this builds the fault-labelled
 dataset needed to train and improve the LightGBM classifier specific to Nigerian petroleum operations —
 replacing the generic TEP-trained model with one tuned to the actual fault signatures of your regulated

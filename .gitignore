@@ -29,3 +29,10 @@ env/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# ── Monitor credentials & runtime state (never commit — holds SMTP/Twilio secrets) ──
+monitor_config.ini
+monitor.log
+alarm_log.csv
+monitor.pid
+monitor_paused.flag

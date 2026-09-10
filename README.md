@@ -1,7 +1,7 @@
-# NMDPRA Anomaly Detection System
+# CORE — Anomaly Detection System
 
 **Machine Learning-powered fault detection for petroleum process facilities**  
-*Developed for the Nigerian Midstream and Downstream Petroleum Regulatory Authority (NMDPRA)*
+***CORE** — Cognitive Operations and Risk Engine for Oil and Gas Industries*
 
 ---
 
@@ -25,7 +25,7 @@ The Streamlit dashboard provides:
 - **Model Performance** — interactive comparison of 4 ML models (Logistic Regression, Random Forest, LightGBM, MLP Neural Network)
 - **Per-Fault Analysis** — detection rate breakdown across all 20 fault types
 - **MSPC Control Charts** — T² and Q statistics with UCL alarm lines and contribution plots
-- **Methodology** — full technical walkthrough and NMDPRA deployment roadmap
+- **Methodology** — full technical walkthrough and deployment roadmap
 
 ---
 
@@ -68,7 +68,7 @@ The Streamlit dashboard provides:
 │   ├── ...
 │   └── contribution_fault_20.png
 │
-├── NMDPRA_Anomaly_Detection_Presentation.html   # Executive slide deck (HTML)
+├── CORE_Anomaly_Detection_Presentation.html     # Executive slide deck (HTML)
 └── TEP_Fault_Detection_Report.html              # Full analysis report (HTML)
 ```
 
@@ -78,8 +78,8 @@ The Streamlit dashboard provides:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/ediomoesu445-glitch/nmdpra-anomaly-detection.git
-cd nmdpra-anomaly-detection
+git clone https://github.com/ediomoesu445-glitch/CORE-ANOMALY-DETECTION-DEMO.git
+cd CORE-ANOMALY-DETECTION-DEMO
 ```
 
 ### 2. Install dependencies
@@ -139,7 +139,7 @@ When an alarm fires, the system automatically computes which of the 52 sensors i
 
 ---
 
-## NMDPRA Context
+## Industry Context
 
 This system was designed with Nigeria's petroleum midstream and downstream sector in mind:
 
@@ -148,7 +148,7 @@ This system was designed with Nigeria's petroleum midstream and downstream secto
 - **Petroleum depot monitoring** — tank level and sensor drift detection
 - **Gas plant compressor health** — early bearing wear and seal degradation
 
-See `NMDPRA_Anomaly_Detection_Presentation.html` for the full executive briefing.
+See `CORE_Anomaly_Detection_Presentation.html` for the full executive briefing.
 
 ---
 
@@ -168,7 +168,7 @@ See `NMDPRA_Anomaly_Detection_Presentation.html` for the full executive briefing
 ## Author
 
 **Ediomo Esu**  
-Nigerian Midstream and Downstream Petroleum Regulatory Authority (NMDPRA)  
+CORE — Cognitive Operations and Risk Engine for Oil and Gas Industries  
 
 ---
 
@@ -180,5 +180,5 @@ Rieth, C.A., Amsel, B.D., Tran, R., & Cook, M.B. (2017). *Additional Tennessee E
 
 ## License
 
-This project is developed for regulatory and research purposes at NMDPRA.  
+This project is developed for regulatory and research purposes.  
 The Tennessee Eastman Process dataset is publicly available for research use.
