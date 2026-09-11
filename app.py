@@ -81,12 +81,13 @@ def _check_password():
         # Card container
         st.markdown("""
         <div style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12);
-                    border-radius:20px; padding:48px 40px 36px; text-align:center; margin-top:20px;">
+                    border-radius:20px; padding:44px 36px 32px; text-align:center;
+                    margin:20px 0 16px;">
             <div style="font-size:52px; margin-bottom:12px;">🛢️</div>
             <div style="color:#ffffff; font-size:28px; font-weight:700;
                         font-family:sans-serif; margin-bottom:6px;">CORE</div>
             <div style="color:rgba(255,255,255,0.5); font-size:13px;
-                        font-family:sans-serif; margin-bottom:28px; line-height:1.6;">
+                        font-family:sans-serif; margin-bottom:0; line-height:1.6;">
                 Anomaly Detection System<br>Enter access password to continue
             </div>
         </div>
