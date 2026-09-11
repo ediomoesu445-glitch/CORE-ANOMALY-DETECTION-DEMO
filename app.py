@@ -417,7 +417,7 @@ if "Overview" in page:
 | Tier | Method | Role | Train Time |
 |---|---|---|---|
 | **1 – Screener** | PCA-MSPC (T² + Q) | Flags any deviation from normal — no labels needed | 1.2 s |
-| **2 – Classifier** | LightGBM | Confirms fault when Tier 1 alarms | 57 s |
+| **2 – Classifier** | LightGBM | Confirms fault when Tier 1 alarms | 40.5 s |
     """)
     st.markdown("---")
     row = ml_sum[ml_sum["Model"]=="LightGBM"].iloc[0]

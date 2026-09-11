@@ -14,7 +14,7 @@ The system uses a **two-tier detection architecture**:
 | Tier | Method | Role |
 |------|--------|------|
 | **1 — Screener** | PCA-MSPC (T² + Q statistics) | Detects *any* deviation from normal operation in real-time |
-| **2 — Classifier** | LightGBM (Gradient Boosting) | Confirms the fault and identifies its type with 99.9% accuracy |
+| **2 — Classifier** | LightGBM (Gradient Boosting) | Confirms the deviation is a real fault — 99.50% precision when it raises an alarm |
 
 ---
 
@@ -33,13 +33,27 @@ The Streamlit dashboard provides:
 
 | Metric | Value |
 |--------|-------|
-| Fault Detection Rate (LightGBM) | **99.9%** |
-| False Alarm Rate | **0.03%** |
-| ROC-AUC | **0.9997** |
-| F1 Score | **0.9983** |
+| Alarm Precision (LightGBM) | **99.50%** |
+| Fault Detection Rate (Recall) | **65.77%** |
+| False Alarm Rate | **1.32%** |
+| Accuracy | **72.35%** |
+| F1 Score | **0.7919** |
+| ROC-AUC | **0.8497** |
 | Faults Detected | 20 distinct types |
 | Process Variables Monitored | 52 sensors simultaneously |
-| Training Time (LightGBM) | 57 seconds |
+| Training Time (LightGBM) | 40.5 seconds |
+
+All figures are the recorded LightGBM run in `tep_model_summary.csv`, evaluated on
+250 000 held-out samples (50 000 normal + 200 000 faulty).
+
+**Precision is the headline number.** At 99.50%, an alarm from this system is almost
+never a false one — which is what makes it usable by an operator who would otherwise
+learn to ignore it. Recall of 65.77% means roughly a third of faulty samples pass
+unflagged on a single reading; in practice a fault persists across many consecutive
+samples, so a sustained fault is caught even though individual readings are missed.
+
+MLP scores marginally higher (67.99% recall, 0.8578 ROC-AUC) but takes 193.8 s to train
+against LightGBM's 40.5 s. LightGBM is the deployed Tier 2 for that reason.
 
 ---
 
@@ -130,7 +144,7 @@ Open your browser at **http://localhost:8501**
 
 ### Stage 2 — LightGBM Classification
 - Trained on 500,000 balanced samples (250k normal + 250k faulty)
-- 372 boosting rounds, trained in 57 seconds
+- 372 boosting rounds (early-stopped from 500), trained in 40.5 seconds
 - Outputs fault probability score (0–1) for every sample
 - Binary classification: Normal (0) vs Fault (1)
 
@@ -180,5 +194,8 @@ Rieth, C.A., Amsel, B.D., Tran, R., & Cook, M.B. (2017). *Additional Tennessee E
 
 ## License
 
-This project is developed for regulatory and research purposes.  
-The Tennessee Eastman Process dataset is publicly available for research use.
+Released under the [MIT License](LICENSE) © 2026 Ediomo Esu.
+
+The licence covers the code in this repository only. The Tennessee Eastman
+Process dataset is distributed separately under its own terms (Harvard
+Dataverse — see the citation above) and is not redistributed here.
