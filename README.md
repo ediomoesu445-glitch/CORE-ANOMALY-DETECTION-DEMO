@@ -115,13 +115,23 @@ Place the four CSV files in the project root:
 ```bash
 python save_models.py
 ```
-This takes approximately 60 seconds and saves `scaler.pkl`, `lgbm_model.pkl`, `pca_model.pkl`, and `feature_cols.txt`.
+Takes about 2–3 minutes and saves `scaler.pkl`, `pca_model.pkl`, `lgbm_model.pkl`
+and `feature_cols.txt`. Most of that is streaming the 1.9 GB faulty training file
+in chunks, which holds peak memory to roughly 600 MB — it will run on a modest
+laptop.
+
+The PCA/MSPC artefacts regenerate bit-identically to the ones committed here. The
+LightGBM model is retrained rather than reproduced exactly: the original run's
+train/validation split was not recorded, so early stopping settles on a different
+round. Hyper-parameters and feature handling are identical.
 
 ### 5. Pre-split the data (for fast demo loading)
 ```bash
 python prep_demo_data.py
 ```
-This splits the 3.5 GB testing file into 20 small per-fault files in `fault_data/`, reducing load time from ~3 minutes to ~1 second.
+This splits the 3.5 GB faulty testing file into 20 per-fault files and copies the
+fault-free testing file alongside them — 21 files in `fault_data/`, reducing load
+time from ~3 minutes to ~1 second.
 
 ### 6. Launch the dashboard
 ```bash
@@ -172,10 +182,10 @@ See `CORE_Anomaly_Detection_Presentation.html` for the full executive briefing.
 |-----------|-----------|
 | ML Model | LightGBM 4.x |
 | MSPC | scikit-learn PCA + SciPy |
-| Dashboard | Streamlit 1.35+ |
+| Dashboard | Streamlit 1.51 |
 | Data Processing | Pandas 2.x, NumPy |
 | Visualisation | Matplotlib |
-| Language | Python 3.10+ |
+| Language | Python 3.12 |
 
 ---
 
