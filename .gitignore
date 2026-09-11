@@ -36,3 +36,6 @@ monitor.log
 alarm_log.csv
 monitor.pid
 monitor_paused.flag
+
+# ── Generated UI screenshots (re-capture from the running app) ──
+screenshots/
