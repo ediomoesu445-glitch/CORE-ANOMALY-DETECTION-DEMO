@@ -1,0 +1,8 @@
+# ── GitHub language stats ────────────────────────────────────────────────────
+# Both files are generated deliverables, not application source: an analysis
+# report and an executive slide deck. The report alone is 17 MB, 99.8% of which
+# is 49 base64-embedded images, so byte-counting made the repo read as 99% HTML
+# when the code is Python. linguist-documentation drops them from the language
+# bar while leaving them fully browsable on GitHub.
+TEP_Fault_Detection_Report.html          linguist-documentation
+CORE_Anomaly_Detection_Presentation.html linguist-documentation
