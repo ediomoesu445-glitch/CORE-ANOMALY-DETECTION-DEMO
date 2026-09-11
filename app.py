@@ -31,19 +31,35 @@ def _check_password():
     [data-testid="stAppViewContainer"] { background: linear-gradient(135deg, #0a1628 0%, #0D2137 100%); }
     [data-testid="stHeader"] { background: transparent; }
     [data-testid="stMainBlockContainer"] { padding-top: 60px !important; }
-    /* Input field — dark styling */
-    .stTextInput input, .stTextInput input:focus {
+    /* Input field — dark styling.
+       BaseWeb nests the field as  stTextInputRootElement > base-input > input,
+       and paints its default light fill on the middle wrapper — so the root is
+       styled as the visible control and everything inside it is made
+       transparent, otherwise that fill shows through. */
+    [data-testid="stTextInputRootElement"] {
         background: rgba(255,255,255,0.07) !important;
         border: 1px solid rgba(255,255,255,0.22) !important;
-        color: #ffffff !important;
         border-radius: 10px !important;
+    }
+    [data-testid="stTextInputRootElement"]:focus-within {
+        border-color: #C9A84C !important;
+    }
+    [data-testid="stTextInputRootElement"] > div,
+    [data-testid="stTextInputRootElement"] input {
+        background: transparent !important;
+    }
+    .stTextInput input, .stTextInput input:focus {
+        color: #ffffff !important;
         font-size: 15px !important;
         text-align: center !important;
         caret-color: #C9A84C !important;
+        box-shadow: none !important;
     }
     .stTextInput input::placeholder { color: rgba(255,255,255,0.35) !important; }
-    /* Remove the white background from the input wrapper */
-    .stTextInput > div { background: transparent !important; }
+    /* Show/hide-password button sits inside the field — keep it legible on dark */
+    [data-testid="stTextInputRootElement"] button { color: rgba(255,255,255,0.55) !important; }
+    [data-testid="stTextInputRootElement"] button:hover { color: #ffffff !important; }
+    [data-testid="stTextInputRootElement"] button svg { fill: currentColor !important; }
     .stTextInput > label { display: none !important; }
     /* Primary button */
     .stButton > button[kind="primary"] {
@@ -767,7 +783,7 @@ elif "Performance" in page:
     st.dataframe(
         disp.style
             .background_gradient(subset=["FDR (Recall)","ROC-AUC","F1"], cmap="Greens")
-            .background_gradient(subset=["FAR"], cmap="Reds_r")
+            .background_gradient(subset=["FAR"], cmap="Reds")
             .format({"Train Time (s)":"{:.1f}","FDR (Recall)":"{:.4f}",
                      "FAR":"{:.4f}","F1":"{:.4f}","ROC-AUC":"{:.4f}","MCC":"{:.4f}"}),
         use_container_width=True
