@@ -1,10 +1,10 @@
-# ── Raw TEP Dataset CSV files (too large for GitHub — download from source) ──
+# ── Raw TEP Dataset CSV files (too large for GitHub, download from source) ──
 TEP_FaultFree_Training.csv
 TEP_Faulty_Training.csv
 TEP_FaultFree_Testing.csv
 TEP_Faulty_Testing.csv
 
-# ── Fault-free split file (172 MB — over GitHub limit) ──
+# ── Fault-free split file (172 MB, over GitHub limit) ──
 fault_data/TEP_Fault00_Testing.csv
 
 # ── Python cache ──
@@ -30,7 +30,7 @@ env/
 Thumbs.db
 desktop.ini
 
-# ── Monitor credentials & runtime state (never commit — holds SMTP/Twilio secrets) ──
+# ── Monitor credentials & runtime state (never commit, holds SMTP/Twilio secrets) ──
 monitor_config.ini
 monitor.log
 alarm_log.csv

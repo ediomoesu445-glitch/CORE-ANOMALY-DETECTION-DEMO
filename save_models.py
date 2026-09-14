@@ -7,7 +7,7 @@ Trains and saves the four artefacts the CORE dashboard loads at startup:
   feature_cols.txt  the 52 process variables, in the order the models expect
 
 The faulty training file is 1.9 GB, so it is read in chunks and sampled with a
-fixed stride — only ONE CHUNK is in RAM at a time, same approach as
+fixed stride, only ONE CHUNK is in RAM at a time, same approach as
 prep_demo_data.py.
 
 Usage:
@@ -57,7 +57,7 @@ def t2_limit(n_samples, n_components, confidence=CONFIDENCE):
 
 
 def q_limit(discarded_eigenvalues, confidence=CONFIDENCE):
-    """Q (SPE) upper control limit — Jackson & Mudholkar.
+    """Q (SPE) upper control limit, Jackson & Mudholkar.
 
     Built from the eigenvalues PCA threw away, so it needs the full-rank
     spectrum, not just the retained components.
@@ -73,7 +73,7 @@ def q_limit(discarded_eigenvalues, confidence=CONFIDENCE):
 
 # ── data loading ──────────────────────────────────────────────────────────────
 def load_faultfree():
-    """The full fault-free training file — 250 000 rows, ~50 MB as float32."""
+    """The full fault-free training file, 250 000 rows, ~50 MB as float32."""
     print(f"Reading {os.path.basename(FAULTFREE_TRAIN)} ...")
     df = pd.read_csv(FAULTFREE_TRAIN)
     feat = [c for c in df.columns if c not in META_COLS]
@@ -122,7 +122,7 @@ def main():
         if not os.path.exists(path):
             raise SystemExit(
                 f"Missing {os.path.basename(path)}.\n"
-                "Download the TEP dataset first — see the README, Getting Started step 3."
+                "Download the TEP dataset first, see the README, Getting Started step 3."
             )
 
     t_start = time.time()

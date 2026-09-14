@@ -1,6 +1,6 @@
 @echo off
 REM ============================================================
-REM  CORE Automated Anomaly Monitor — Launcher
+REM  CORE Automated Anomaly Monitor, Launcher
 REM  Double-click this file to start the monitor.
 REM  A log window will appear showing live detection status.
 REM ============================================================

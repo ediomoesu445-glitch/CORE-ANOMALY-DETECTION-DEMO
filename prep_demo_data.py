@@ -1,6 +1,6 @@
 """
 One-time script: splits TEP_Faulty_Testing.csv into 20 per-fault files.
-Writes each row to disk immediately — uses only ONE CHUNK of RAM at a time.
+Writes each row to disk immediately, uses only ONE CHUNK of RAM at a time.
 Safe to interrupt and re-run; already-complete files are skipped.
 """
 

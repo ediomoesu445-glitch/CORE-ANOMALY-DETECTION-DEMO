@@ -2,11 +2,11 @@
 CORE Automated Anomaly Monitor
 (Cognitive Operations and Risk Engine for Oil and Gas Industries)
 ==================================================================
-Runs headlessly — no dashboard, no human needed.
+Runs headlessly, no dashboard, no human needed.
 
 Two modes (set in monitor_config.ini):
-  simulate  — replays a TEP fault file in real-time batches to demo alerting
-  watch     — monitors the  incoming/  folder for new sensor CSV files from the plant
+  simulate  - replays a TEP fault file in real-time batches to demo alerting
+  watch     - monitors the  incoming/  folder for new sensor CSV files from the plant
 
 On every alarm transition it sends:
   • Email   (Gmail / any SMTP)
@@ -52,7 +52,7 @@ FDESC_LAYMAN = {
     1: "Wrong gas mix arriving from upstream pipeline",
     2: "Too much inert / waste gas in the feed",
     3: "Feed stream suddenly too hot or too cold",
-    4: "Reactor cooling system failing — temperature rising",
+    4: "Reactor cooling system failing, temperature rising",
     5: "Condenser cooling system disrupted",
     6: "Complete loss of primary gas supply",
     7: "Main gas pipeline pressure has dropped dangerously",
@@ -62,8 +62,8 @@ FDESC_LAYMAN = {
     11: "Reactor cooling water behaving erratically",
     12: "Heat exchanger slowly losing effectiveness (fouling / scaling)",
     13: "Processing efficiency gradually declining (catalyst degrading)",
-    14: "Reactor cooling valve is physically stuck — cannot move",
-    15: "Condenser cooling valve is physically stuck — cannot move",
+    14: "Reactor cooling valve is physically stuck, cannot move",
+    15: "Condenser cooling valve is physically stuck, cannot move",
     16: "Novel / unclassified anomaly detected (Type 16)",
     17: "Novel / unclassified anomaly detected (Type 17)",
     18: "Novel / unclassified anomaly detected (Type 18)",
@@ -93,8 +93,8 @@ FAULT_ACTION = {
     11: "Inspect cooling water pumps and flow control valve on reactor cooling loop.",
     12: "Schedule heat exchanger cleaning/inspection. Plan shutdown window before failure.",
     13: "Schedule catalyst inspection and replacement. Product yield will continue to decline.",
-    14: "URGENT: Dispatch maintenance team — reactor cooling valve stuck. Monitor temperature manually.",
-    15: "URGENT: Dispatch maintenance team — condenser cooling valve stuck. Monitor pressure manually.",
+    14: "URGENT: Dispatch maintenance team, reactor cooling valve stuck. Monitor temperature manually.",
+    15: "URGENT: Dispatch maintenance team, condenser cooling valve stuck. Monitor pressure manually.",
     16: "Investigate contribution plot. Conduct physical inspection of highlighted equipment.",
     17: "Investigate contribution plot. Conduct physical inspection of highlighted equipment.",
     18: "Investigate contribution plot. Conduct physical inspection of highlighted equipment.",
@@ -188,10 +188,10 @@ def build_alert(cfg, fault_num, prob, T2, Q, T2_UCL, Q_UCL, top_sensors, source,
         f"  • {name}: {score:.3f}" for name, score in top_sensors
     )
 
-    subject = f"[CORE ALARM] {sev_tag} — {plain} — {facility}"
+    subject = f"[CORE ALARM] {sev_tag}: {plain} ({facility})"
 
     body = f"""
-CORE ANOMALY DETECTION SYSTEM — AUTOMATED ALERT
+CORE ANOMALY DETECTION SYSTEM - AUTOMATED ALERT
 =================================================
 
 Time        : {now}
@@ -202,7 +202,7 @@ Samples     : {sample_count} readings analysed
 
 FAULT DETECTED
 --------------
-Fault Type  : Fault {fault_num} — {FDESC.get(fault_num, 'Unknown')}
+Fault Type  : Fault {fault_num} - {FDESC.get(fault_num, 'Unknown')}
 Plain English: {plain}
 Severity    : {sev}
 
@@ -270,7 +270,7 @@ def send_sms(cfg, body, log):
             client.messages.create(to=number, from_=from_, body=short)
             log.info(f"SMS sent to {number}")
     except ImportError:
-        log.warning("twilio not installed — run: pip install twilio")
+        log.warning("twilio not installed, run: pip install twilio")
     except Exception as e:
         log.error(f"SMS failed: {e}")
 
@@ -292,7 +292,7 @@ def send_whatsapp(cfg, body, log):
             )
             log.info(f"WhatsApp sent to {number}")
     except ImportError:
-        log.warning("twilio not installed — run: pip install twilio")
+        log.warning("twilio not installed, run: pip install twilio")
     except Exception as e:
         log.error(f"WhatsApp failed: {e}")
 
@@ -318,7 +318,7 @@ def process_file(path, scaler, lgbm, pca_data, feat_cols, cfg, cooldown_tracker,
 
     missing = [c for c in feat_cols if c not in df.columns]
     if missing:
-        log.warning(f"{path}: missing columns {missing[:5]} — skipping")
+        log.warning(f"{path}: missing columns {missing[:5]}, skipping")
         return
 
     try:
@@ -372,14 +372,14 @@ def process_file(path, scaler, lgbm, pca_data, feat_cols, cfg, cooldown_tracker,
             send_whatsapp(cfg, body, log)
             cooldown_tracker["last_alert_time"] = datetime.now()
             alerted = True
-            log.info(f"ALARM SENT — Fault {fault_num} ({sev}), confidence {prob:.1%}")
+            log.info(f"ALARM SENT, Fault {fault_num} ({sev}), confidence {prob:.1%}")
         else:
             remaining = cooldown_min - (datetime.now() - last_alert).total_seconds() / 60
-            log.info(f"Alarm active but in cooldown ({remaining:.0f} min remaining) — not re-alerting")
+            log.info(f"Alarm active but in cooldown ({remaining:.0f} min remaining), not re-alerting")
 
     log_event(now, source, fault_num, sev, prob, T2, Q, T2_UCL, Q_UCL, alerted)
 
-# ── WATCH mode — monitors incoming/ folder ─────────────────────────────────────
+# ── WATCH mode: monitors incoming/ folder ─────────────────────────────────────
 def run_watch_mode(scaler, lgbm, pca_data, feat_cols, cfg, log):
     os.makedirs(INCOMING_DIR,  exist_ok=True)
     os.makedirs(PROCESSED_DIR, exist_ok=True)
@@ -392,7 +392,7 @@ def run_watch_mode(scaler, lgbm, pca_data, feat_cols, cfg, log):
     stats           = {"batches": 0, "alarms": 0, "last_alarm_time": None,
                        "uptime_hours": 0.0}
 
-    log.info(f"WATCH mode — monitoring: {INCOMING_DIR}")
+    log.info(f"WATCH mode: monitoring: {INCOMING_DIR}")
     log.info(f"Check interval: {interval:.0f}s  |  Heartbeat every {heartbeat_hours:.0f}h")
 
     # Send startup heartbeat immediately
@@ -420,7 +420,7 @@ def run_watch_mode(scaler, lgbm, pca_data, feat_cols, cfg, log):
                     if stats["alarms"] > alarms_before:
                         stats["last_alarm_time"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             else:
-                log.debug(f"No new files — sleeping {interval:.0f}s")
+                log.debug(f"No new files, sleeping {interval:.0f}s")
         except Exception as e:
             log.error(f"Watch loop error: {e}")
 
@@ -432,7 +432,7 @@ def run_watch_mode(scaler, lgbm, pca_data, feat_cols, cfg, log):
 
         time.sleep(interval)
 
-# ── SIMULATE mode — replays TEP fault file ────────────────────────────────────
+# ── SIMULATE mode: replays TEP fault file ────────────────────────────────────
 def run_simulate_mode(scaler, lgbm, pca_data, feat_cols, cfg, log):
     fault_num  = cfg.getint("SIMULATE",  "fault_number",   fallback=6)
     run_num    = cfg.getint("SIMULATE",  "run_number",      fallback=1)
@@ -448,7 +448,7 @@ def run_simulate_mode(scaler, lgbm, pca_data, feat_cols, cfg, log):
 
     heartbeat_hours = cfg.getfloat("MONITOR", "heartbeat_hours", fallback=6.0)
 
-    log.info(f"SIMULATE mode — Fault {fault_num}, Run {run_num}, batch={batch_size} samples")
+    log.info(f"SIMULATE mode: Fault {fault_num}, Run {run_num}, batch={batch_size} samples")
     log.info(f"Data file: {data_path}")
     log.info(f"Each batch = {interval:.0f}s real time (simulating one plant check interval)")
     log.info(f"Heartbeat email every {heartbeat_hours:.0f} hours")
@@ -479,7 +479,7 @@ def run_simulate_mode(scaler, lgbm, pca_data, feat_cols, cfg, log):
         # Honour pause before processing each batch
         wait_if_paused(log)
 
-        log.info(f"--- Batch: samples {cursor+1}–{end} ---")
+        log.info(f"--- Batch: samples {cursor+1}-{end} ---")
         alarms_before = cooldown.get("total_alarms", 0)
         process_file_df(batch, source, scaler, lgbm, pca_data, feat_cols,
                         cfg, fault_num, cooldown, log)
@@ -509,7 +509,7 @@ def process_file_df(df, source, scaler, lgbm, pca_data, feat_cols,
     """Same as process_file but takes a DataFrame directly (simulate mode)."""
     missing = [c for c in feat_cols if c not in df.columns]
     if missing:
-        log.warning(f"Missing columns {missing[:5]} — skipping batch")
+        log.warning(f"Missing columns {missing[:5]}, skipping batch")
         return
 
     try:
@@ -551,10 +551,10 @@ def process_file_df(df, source, scaler, lgbm, pca_data, feat_cols,
             send_whatsapp(cfg, body, log)
             cooldown_tracker["last_alert_time"] = datetime.now()
             alerted = True
-            log.info(f"  >>> ALERT SENT — Fault {fault_num} ({sev}), confidence {prob:.1%}")
+            log.info(f"  >>> ALERT SENT, Fault {fault_num} ({sev}), confidence {prob:.1%}")
         else:
             remaining = cooldown_min - (datetime.now() - last_alert).total_seconds() / 60
-            log.info(f"  Alarm active — cooldown {remaining:.0f} min remaining")
+            log.info(f"  Alarm active, cooldown {remaining:.0f} min remaining")
     else:
         log.info(f"  Status: NORMAL")
 
@@ -566,11 +566,11 @@ def wait_if_paused(log):
     was_paused = False
     while os.path.exists(PAUSE_FILE):
         if not was_paused:
-            log.info("PAUSED — waiting for resume signal from dashboard...")
+            log.info("PAUSED: waiting for resume signal from dashboard...")
             was_paused = True
         time.sleep(3)
     if was_paused:
-        log.info("RESUMED — continuing detection")
+        log.info("RESUMED: continuing detection")
 
 # ── Heartbeat email ────────────────────────────────────────────────────────────
 def send_heartbeat(cfg, stats, log):
@@ -584,7 +584,7 @@ def send_heartbeat(cfg, stats, log):
     alarms_line = (
         f"{stats['alarms']} alarm(s) sent"
         if stats["alarms"] > 0
-        else "No alarms — all readings normal"
+        else "No alarms, all readings normal"
     )
     last_alarm_line = (
         f"Last alarm : {stats['last_alarm_time']}"
@@ -592,15 +592,15 @@ def send_heartbeat(cfg, stats, log):
         else "Last alarm : None this session"
     )
 
-    subject = f"[CORE HEARTBEAT] Monitor Running — {facility} — {now[:10]}"
+    subject = f"[CORE HEARTBEAT] Monitor Running: {facility} ({now[:10]})"
     body = f"""
-CORE ANOMALY DETECTION SYSTEM — STATUS REPORT
+CORE ANOMALY DETECTION SYSTEM - STATUS REPORT
 ==============================================
 
 Time       : {now}
 Facility   : {facility}
 Location   : {location}
-Status     : RUNNING — all systems active
+Status     : RUNNING, all systems active
 
 SESSION SUMMARY (since last start)
 ------------------------------------
@@ -611,7 +611,7 @@ Uptime            : {stats['uptime_hours']:.1f} hours
 
 This is an automated status check confirming the monitor
 is running correctly. If you stop receiving these emails,
-the monitor may have stopped — restart it by logging out
+the monitor may have stopped: restart it by logging out
 and back in, or double-click  start_monitor.bat.
 
 ---
@@ -629,7 +629,7 @@ def main():
                         help="Path to config file")
     args   = parser.parse_args()
 
-    # Logging — console + file
+    # Logging: console + file
     log_path = os.path.join(BASE, "monitor.log")
     logging.basicConfig(
         level=logging.INFO,
@@ -659,7 +659,7 @@ def main():
     atexit.register(lambda: os.remove(PAUSE_FILE) if os.path.exists(PAUSE_FILE) else None)
 
     log.info("=" * 60)
-    log.info("CORE AUTOMATED ANOMALY MONITOR — STARTED")
+    log.info("CORE AUTOMATED ANOMALY MONITOR, STARTED")
     log.info(f"PID      : {os.getpid()}")
     log.info(f"Facility : {facility}")
     log.info(f"Mode     : {mode.upper()}")

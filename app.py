@@ -1,6 +1,6 @@
 """
-CORE — Cognitive Operations and Risk Engine for Oil and Gas Industries
-Anomaly Detection System  —  Tennessee Eastman Process
+CORE: Cognitive Operations and Risk Engine for Oil and Gas Industries
+Anomaly Detection System  -  Tennessee Eastman Process
 """
 
 import io, pickle, time, warnings, os
@@ -31,9 +31,9 @@ def _check_password():
     [data-testid="stAppViewContainer"] { background: linear-gradient(135deg, #0a1628 0%, #0D2137 100%); }
     [data-testid="stHeader"] { background: transparent; }
     [data-testid="stMainBlockContainer"] { padding-top: 60px !important; }
-    /* Input field — dark styling.
+    /* Input field: dark styling.
        BaseWeb nests the field as  stTextInputRootElement > base-input > input,
-       and paints its default light fill on the middle wrapper — so the root is
+       and paints its default light fill on the middle wrapper, so the root is
        styled as the visible control and everything inside it is made
        transparent, otherwise that fill shows through. */
     [data-testid="stTextInputRootElement"] {
@@ -56,7 +56,7 @@ def _check_password():
         box-shadow: none !important;
     }
     .stTextInput input::placeholder { color: rgba(255,255,255,0.35) !important; }
-    /* Show/hide-password button sits inside the field — keep it legible on dark */
+    /* Show/hide-password button sits inside the field, keep it legible on dark */
     [data-testid="stTextInputRootElement"] button { color: rgba(255,255,255,0.55) !important; }
     [data-testid="stTextInputRootElement"] button:hover { color: #ffffff !important; }
     [data-testid="stTextInputRootElement"] button svg { fill: currentColor !important; }
@@ -167,11 +167,11 @@ FDESC = {
 }
 
 FDESC_LAYMAN = {
-    0:  "Everything is normal — no issues detected",
+    0:  "Everything is normal, no issues detected",
     1:  "Wrong gas mix arriving from upstream pipeline",
     2:  "Too much inert / waste gas in the feed",
     3:  "Feed stream suddenly too hot or too cold",
-    4:  "Reactor cooling system failing — temperature rising",
+    4:  "Reactor cooling system failing, temperature rising",
     5:  "Condenser cooling system disrupted",
     6:  "Complete loss of primary gas supply",
     7:  "Main gas pipeline pressure has dropped dangerously",
@@ -181,8 +181,8 @@ FDESC_LAYMAN = {
     11: "Reactor cooling water behaving erratically",
     12: "Heat exchanger slowly losing effectiveness (fouling / scaling)",
     13: "Processing efficiency gradually declining (catalyst degrading)",
-    14: "Reactor cooling valve is physically stuck — cannot move",
-    15: "Condenser cooling valve is physically stuck — cannot move",
+    14: "Reactor cooling valve is physically stuck, cannot move",
+    15: "Condenser cooling valve is physically stuck, cannot move",
     16: "Novel / unclassified anomaly detected (Type 16)",
     17: "Novel / unclassified anomaly detected (Type 17)",
     18: "Novel / unclassified anomaly detected (Type 18)",
@@ -203,17 +203,17 @@ FDESC_CONSEQUENCE = {
          "and affect reaction conditions downstream."),
     4:  ("The water supply used to cool the main reactor vessel has become warmer than normal. "
          "This could be a cooling tower failure, pump issue, or extreme weather overwhelming the system. "
-         "If not addressed, reactor temperature will begin to rise — a direct safety risk."),
+         "If not addressed, reactor temperature will begin to rise, a direct safety risk."),
     5:  ("The condenser (which converts gas back to liquid for separation) is losing its cooling "
          "effectiveness. Separator pressure will rise and product flows will become unpredictable."),
     6:  ("The primary gas feed to the plant has been completely cut off. This is the most critical feed "
-         "fault — it could be a pipeline rupture, emergency valve closure, or upstream supply failure. "
+         "fault, it could be a pipeline rupture, emergency valve closure, or upstream supply failure. "
          "The plant cannot continue operating without primary feed."),
     7:  ("Pressure in a major gas supply header has dropped sharply. This indicates a possible pipeline "
          "breach, compressor station failure, or a large valve blowout. There is a risk of uncontrolled "
-         "gas release to atmosphere — immediate emergency response is required."),
+         "gas release to atmosphere, immediate emergency response is required."),
     8:  ("The composition of the incoming gas is fluctuating randomly. This suggests an unstable upstream "
-         "source — a poorly controlled gas well, blending errors, or inconsistent supply. "
+         "source: a poorly controlled gas well, blending errors, or inconsistent supply. "
          "Makes the plant very difficult to control and maintain product quality."),
     9:  ("The temperature of a secondary feed stream is varying erratically. This points to an "
          "intermittently failing heat exchanger, a stuck bypass valve, or an unstable steam supply upstream."),
@@ -223,15 +223,15 @@ FDESC_CONSEQUENCE = {
          "cycling on/off, a partially blocked water line, or a faulty flow control valve. "
          "Makes reactor temperature control unstable."),
     12: ("The effectiveness of the condenser is slowly declining over time. This is the classic signature "
-         "of heat exchanger fouling — mineral scale or deposits building up inside the tubes, "
+         "of heat exchanger fouling, mineral scale or deposits building up inside the tubes, "
          "gradually reducing heat transfer. Without AI monitoring, this goes completely unnoticed "
          "until a sudden major failure occurs."),
     13: ("The overall efficiency of the main processing reaction is slowly declining. In real life, this "
-         "represents catalyst deactivation — the catalyst gradually losing its effectiveness. Product yield "
+         "represents catalyst deactivation, the catalyst gradually losing its effectiveness. Product yield "
          "quietly drops over weeks. This is exactly the type of slow, hard-to-spot problem that AI "
          "monitoring is built to catch before it causes a shutdown."),
     14: ("The valve controlling cooling water flow to the reactor is physically stuck and cannot move. "
-         "This is a serious mechanical failure — if stuck closed, the reactor overheats; if stuck open, "
+         "This is a serious mechanical failure, if stuck closed, the reactor overheats; if stuck open, "
          "the process is destabilised. Either scenario poses a safety risk requiring urgent maintenance."),
     15: ("The condenser cooling valve is physically stuck. Same mechanical failure type as Fault 14, "
          "but on the condenser. Loss of control over condenser cooling causes pressure to build in "
@@ -245,7 +245,7 @@ FDESC_CONSEQUENCE = {
          "shows which sensors are most abnormal."),
     19: ("Undisclosed fault type. An anomaly has been detected in the process sensor readings. "
          "Physical inspection of the highlighted equipment is recommended."),
-    20: ("Undisclosed fault type. The system has identified unusual behaviour — further investigation "
+    20: ("Undisclosed fault type. The system has identified unusual behaviour, further investigation "
          "of the highlighted sensors is recommended."),
 }
 
@@ -260,7 +260,7 @@ FAULT_ALARM_ACTION = {
     4:  "Inspect the cooling tower and cooling water pumps immediately. Check for blockages "
         "in the cooling water supply line. Reduce reactor load if temperature continues to rise.",
     5:  "Check condenser cooling water supply. Inspect the condenser for fouling. Monitor separator "
-        "pressure closely — consider load reduction if pressure rises above limits.",
+        "pressure closely: consider load reduction if pressure rises above limits.",
     6:  "🚨 EMERGENCY: Initiate controlled plant shutdown procedure. Locate and isolate the "
         "source of feed loss. Contact upstream pipeline operator. Do not restart until feed is confirmed safe.",
     7:  "🚨 EMERGENCY: Activate emergency isolation valves. Evacuate the area if safe to do so. "
@@ -276,7 +276,7 @@ FAULT_ALARM_ACTION = {
     12: "Schedule heat exchanger cleaning/inspection. The tubes need to be descaled or cleaned. "
         "Plan a shutdown window before the exchanger fails completely.",
     13: "Schedule catalyst inspection and replacement if confirmed. This is a planned maintenance "
-        "action — product yield will continue to decline if left unchecked.",
+        "action: product yield will continue to decline if left unchecked.",
     14: "⚠️ URGENT: Dispatch maintenance team to inspect and repair/replace the reactor cooling valve. "
         "Monitor reactor temperature manually. Prepare for controlled shutdown if temperature "
         "approaches safety limits.",
@@ -416,8 +416,8 @@ if "Overview" in page:
     st.markdown("""
 | Tier | Method | Role | Train Time |
 |---|---|---|---|
-| **1 – Screener** | PCA-MSPC (T² + Q) | Flags any deviation from normal — no labels needed | 1.2 s |
-| **2 – Classifier** | LightGBM | Confirms fault when Tier 1 alarms | 40.5 s |
+| **1. Screener** | PCA-MSPC (T² + Q) | Flags any deviation from normal, no labels needed | 1.2 s |
+| **2. Classifier** | LightGBM | Confirms fault when Tier 1 alarms | 40.5 s |
     """)
     st.markdown("---")
     row = ml_sum[ml_sum["Model"]=="LightGBM"].iloc[0]
@@ -497,7 +497,7 @@ elif "Simulation" in page:
                     df = df[df["simulationRun"] == run_sel].sort_values("sample").reset_index(drop=True)
             elif fault_sel == 0:
                 st.error("Normal operation (Fault 0) data is not available in the online demo "
-                         "due to file size limits. Please select **Fault 1–20** to run a simulation.")
+                         "due to file size limits. Please select **Fault 1-20** to run a simulation.")
                 SS.sim_key = None
                 df = pd.DataFrame()
             else:
@@ -508,7 +508,7 @@ elif "Simulation" in page:
                     SS.sim_key = None
                     df = pd.DataFrame()
                 else:
-                    st.warning("Scanning full CSV — this may take a few minutes.")
+                    st.warning("Scanning full CSV. This may take a few minutes.")
                     bar = st.progress(0.0, text="Scanning…")
                     chunks, total = [], 0
                     file_size = os.path.getsize(big_path)
@@ -564,7 +564,7 @@ elif "Simulation" in page:
                                   text=f"Pre-rendering… {ki+1}/{len(idxs)}")
                 prog.empty()
                 SS.sim_chart_cache = cache
-                st.success(f"✅  Loaded {n:,} samples — ready. Use slider or ▶ Play.")
+                st.success(f"✅  Loaded {n:,} samples, ready. Use slider or ▶ Play.")
 
     # ── DISPLAY ───────────────────────────────────────────────────────────────
     with main:
@@ -620,7 +620,7 @@ elif "Simulation" in page:
                       delta_color="inverse" if Q>Q_UCL else "normal")
             m4.metric("Sample", f"{samp}/{n}")
 
-            # ── Alarm sound — fires once on False→True transition ─────────────
+            # ── Alarm sound: fires once on False→True transition ─────────────
             alarm_active = bool(prob > 0.5 or T2 > T2_UCL or Q > Q_UCL)
             if alarm_active and not SS.prev_alarm and SS.alarm_sound:
                 st.components.v1.html("""
@@ -660,7 +660,7 @@ elif "Simulation" in page:
                 scol  = SEV_COLOR.get(sev, "#7f8c8d")
                 plain = FDESC_LAYMAN.get(loaded_fault, FDESC.get(loaded_fault, ""))
                 with st.expander(
-                    f"📖  Plain-English Explanation — Fault {loaded_fault}: {plain}",
+                    f"📖  Plain-English Explanation, Fault {loaded_fault}: {plain}",
                     expanded=alarm_active
                 ):
                     la, lb = st.columns([1, 2])
@@ -675,11 +675,11 @@ elif "Simulation" in page:
                         st.markdown("")
                         st.markdown("**How the alarm works:**")
                         st.markdown(
-                            "- **ML Fault Prob** — the AI's confidence (0–100%) that something is wrong. "
+                            "- **ML Fault Prob**: the AI's confidence (0-100%) that something is wrong. "
                             "Above **50%** = elevated concern; above **80%** = alarm.\n"
-                            "- **T² Statistic** — measures how far the plant has moved from its "
+                            "- **T² Statistic**: measures how far the plant has moved from its "
                             "normal operating zone. Think of it as *'how unusual is the overall state?'*\n"
-                            "- **Q Statistic (SPE)** — measures how much the current sensor readings "
+                            "- **Q Statistic (SPE)**: measures how much the current sensor readings "
                             "deviate from what the model expects. Think of it as *'how unexpected are "
                             "these readings?'*\n\n"
                             "An alarm fires when **any one** of the three exceeds its limit."
@@ -717,7 +717,7 @@ elif "Simulation" in page:
 
             # ── contribution plot on alarm ────────────────────────────────────
             if prob > 0.5 or T2 > T2_UCL or Q > Q_UCL:
-                with st.expander("📊 Contribution Plot — which sensors are causing the alarm?", expanded=True):
+                with st.expander("📊 Contribution Plot: which sensors are causing the alarm?", expanded=True):
                     st.caption(
                         "The bars show which sensors are contributing most to the alarm. "
                         "**Taller red bars = that sensor is behaving most abnormally.** "
@@ -729,7 +729,7 @@ elif "Simulation" in page:
                     qci    = qc[i];  top_q  = np.argsort(qci)[-5:][::-1]
 
                     fig2, (ca, cb) = plt.subplots(1, 2, figsize=(10, 3.2), facecolor="#f8f9fa")
-                    fig2.suptitle(f"Sensor Contribution to Alarm — Sample {samp}",
+                    fig2.suptitle(f"Sensor Contribution to Alarm (Sample {samp})",
                                   fontsize=9, fontweight="bold")
                     ca.bar(range(nv), t2ci,
                            color=["#C62828" if j in top_t2 else "#BBDEFB" for j in range(nv)])
@@ -753,11 +753,11 @@ elif "Simulation" in page:
                     with r1:
                         st.markdown("**🔴 Most abnormal sensors (Overall state):**")
                         for j in top_t2:
-                            st.markdown(f"- **{fnames[j]}** — contribution score: `{t2ci[j]:.3f}`")
+                            st.markdown(f"- **{fnames[j]}** contribution score: `{t2ci[j]:.3f}`")
                     with r2:
                         st.markdown("**🟠 Most unexpected readings:**")
                         for j in top_q:
-                            st.markdown(f"- **{fnames[j]}** — contribution score: `{qci[j]:.3f}`")
+                            st.markdown(f"- **{fnames[j]}** contribution score: `{qci[j]:.3f}`")
                     st.caption(
                         "💡 *Sensors appearing in both lists are the strongest candidates for the root cause of this alarm.*"
                     )
@@ -826,7 +826,7 @@ elif "Per-Fault" in page:
         with tab: show_img(os.path.join(BASE,"assets",fn))
     show_img(os.path.join(BASE,"assets","fig8_fault1_vs_fault3.png"))
     st.info(
-        "**Faults 3, 9 and 15** are the hardest to detect — their signal magnitude is below "
+        "**Faults 3, 9 and 15** are the hardest to detect, their signal magnitude is below "
         "natural process noise. In real life, these are equivalent to slow corrosion, gradual "
         "instrument drift, or a valve that is only slightly stuck. The AI catches them earlier "
         "than any human operator could."
@@ -849,7 +849,7 @@ elif "Methodology" in page:
 | TEP_Faulty_Testing | 9 600 000 | 20 fault types for evaluation |
 
 **52 variables:** 41 sensor measurements + 11 control valve positions.
-Fault introduced at **sample 160**; samples 1–159 are normal.
+Fault introduced at **sample 160**; samples 1-159 are normal.
         """)
         st.dataframe(pd.DataFrame([
             {
@@ -863,8 +863,8 @@ Fault introduced at **sample 160**; samples 1–159 are normal.
     with tab2:
         st.markdown(f"""
 **MSPC control limits (99% confidence)**
-- T² UCL = **{T2_UCL:.2f}** — alarm if process moves outside normal variation
-- Q UCL = **{Q_UCL:.2f}** — alarm if process leaves the normal operating subspace
+- T² UCL = **{T2_UCL:.2f}**: alarm if process moves outside normal variation
+- Q UCL = **{Q_UCL:.2f}**: alarm if process leaves the normal operating subspace
 
 **ML models trained on 500 000 balanced samples** (250 k normal + 250 k faulty).
         """)
@@ -876,14 +876,14 @@ Fault introduced at **sample 160**; samples 1–159 are normal.
         st.markdown("""
 | Phase | Action | Timeline |
 |---|---|---|
-| **1 — Foundation** | Collect 6 months normal data from 5–10 pilot facilities | Months 1–3 |
-| **2 — Screening** | Deploy MSPC screener; log contribution plots per alarm | Months 3–6 |
-| **3 — Labelling** | Record inspection outcomes vs flagged anomalies | Months 6–18 |
-| **4 — Classify** | Train LightGBM on labelled data; deploy Tier-2 | Months 18–24 |
-| **5 — Expand** | Rolling-window features; full portfolio; retrain quarterly | Month 24+ |
+| **1. Foundation** | Collect 6 months normal data from 5-10 pilot facilities | Months 1-3 |
+| **2. Screening** | Deploy MSPC screener; log contribution plots per alarm | Months 3-6 |
+| **3. Labelling** | Record inspection outcomes vs flagged anomalies | Months 6-18 |
+| **4. Classify** | Train LightGBM on labelled data; deploy Tier-2 | Months 18-24 |
+| **5. Expand** | Rolling-window features; full portfolio; retrain quarterly | Month 24+ |
         """)
         st.info("Same code, different data. The pipeline developed here runs unchanged on "
-                "live plant operational data — only the CSV files need to be swapped.")
+                "live plant operational data, only the CSV files need to be swapped.")
 
 # ══════════════════════════════════════════════════════════════════════════════
 # MONITOR STATUS  (live dashboard for the background monitor)
@@ -958,7 +958,7 @@ elif "Monitor" in page:
             if st.button("⏸  Pause", use_container_width=True,
                          disabled=not running):
                 open(PAUSE_FILE, "w").close()
-                st.info("Monitor paused — no new batches will run until resumed.")
+                st.info("Monitor paused, no new batches will run until resumed.")
                 st.rerun()
 
     with b3:
@@ -995,22 +995,22 @@ elif "Monitor" in page:
     # ── Status banner ─────────────────────────────────────────────────────────
     if running and paused:
         st.markdown(
-            '<div class="alarm-warn">⏸ &nbsp; MONITOR PAUSED — detection suspended, press Resume to continue</div>',
+            '<div class="alarm-warn">⏸ &nbsp; MONITOR PAUSED, detection suspended, press Resume to continue</div>',
             unsafe_allow_html=True
         )
     elif running:
         st.markdown(
-            '<div class="alarm-green">✅ &nbsp; MONITOR IS RUNNING — background detection active</div>',
+            '<div class="alarm-green">✅ &nbsp; MONITOR IS RUNNING, background detection active</div>',
             unsafe_allow_html=True
         )
     elif last_seen and minutes_ago is not None and minutes_ago < 10:
         st.markdown(
-            '<div class="alarm-warn">⚠️ &nbsp; MONITOR RECENTLY ACTIVE — process may be starting up</div>',
+            '<div class="alarm-warn">⚠️ &nbsp; MONITOR RECENTLY ACTIVE, process may be starting up</div>',
             unsafe_allow_html=True
         )
     else:
         st.markdown(
-            '<div class="alarm-red">🔴 &nbsp; MONITOR NOT RUNNING — press Start or restart your PC</div>',
+            '<div class="alarm-red">🔴 &nbsp; MONITOR NOT RUNNING, press Start or restart your PC</div>',
             unsafe_allow_html=True
         )
 
@@ -1028,13 +1028,13 @@ elif "Monitor" in page:
     total_batches = len(log_df)
     total_alarms  = int(log_df["alerted"].sum()) if not log_df.empty else 0
     last_ts       = log_df["timestamp"].max() if not log_df.empty else None
-    last_seen_str = last_seen.strftime("%Y-%m-%d %H:%M:%S") if last_seen else "—"
+    last_seen_str = last_seen.strftime("%Y-%m-%d %H:%M:%S") if last_seen else "-"
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Monitor Status",   "Running ✅" if running else "Stopped 🔴")
     c2.metric("Batches Processed", f"{total_batches:,}")
     c3.metric("Alerts Sent",       f"{total_alarms:,}")
-    c4.metric("Last Activity",     last_seen_str if last_seen else "—")
+    c4.metric("Last Activity",     last_seen_str if last_seen else "-")
 
     st.markdown("---")
 
@@ -1047,7 +1047,7 @@ elif "Monitor" in page:
         )
     else:
         display = log_df.copy().sort_values("timestamp", ascending=False).head(50)
-        display["alerted"] = display["alerted"].map({True: "✉️ Sent", False: "—"})
+        display["alerted"] = display["alerted"].map({True: "✉️ Sent", False: "-"})
         display["severity"] = display["severity"].map(
             lambda s: {"Critical":"🔴 Critical","High":"🟠 High",
                        "Medium":"🟡 Medium","Normal":"🟢 Normal"}.get(s, s)
@@ -1072,7 +1072,7 @@ elif "Monitor" in page:
         st.subheader("📈 Detection Statistics Over Time")
 
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 4), facecolor="#f8f9fa", sharex=True)
-        fig.suptitle("AI Confidence & T² Statistic — All Batches", fontsize=9, fontweight="bold")
+        fig.suptitle("AI Confidence & T² Statistic (All Batches)", fontsize=9, fontweight="bold")
 
         x = range(len(log_df))
         ax1.plot(x, log_df["ml_prob"].astype(float) * 100, color="#C62828", lw=1.5)
@@ -1101,7 +1101,7 @@ elif "Monitor" in page:
             tail = "".join(lines[-30:])
             st.code(tail, language=None)
         else:
-            st.info("monitor.log not found — monitor has not been started yet.")
+            st.info("monitor.log not found. The monitor has not been started yet.")
 
     # ── Restart instructions ───────────────────────────────────────────────────
     if not running:
@@ -1110,7 +1110,7 @@ elif "Monitor" in page:
             "**Monitor is not running.**  \n"
             "To restart: open the CORE project folder on your Desktop "
             "and double-click **`start_monitor.bat`**  \n"
-            "Or restart your PC — it will start automatically on login."
+            "Or restart your PC, it will start automatically on login."
         )
 
     # ── Auto-refresh ──────────────────────────────────────────────────────────
